@@ -81,6 +81,25 @@ public class GeneratorBehaviorTests
         clone.ShouldNotBeSameAs(original);
         clone.Name.ShouldBe(original.Name);
     }
+
+    [Fact]
+    public void AbstractClass_ImplementsInterface_GeneratesMethod()
+    {
+        // Arrange
+        var original = new ConcreteClass
+        {
+            Name = "Test",
+            Value = 42
+        };
+
+        // Act
+        var clone = (ConcreteClass)original.DeepClone();
+
+        // Assert
+        clone.ShouldNotBeSameAs(original);
+        clone.Name.ShouldBe(original.Name);
+        clone.Value.ShouldBe(original.Value);
+    }
 }
 
 // Test classes
@@ -117,4 +136,25 @@ public interface ICustomCloneable : IDeepCloneable<DerivedInterfaceClass>
 public partial class DerivedInterfaceClass : ICustomCloneable
 {
     public string Name { get; set; } = "";
+}
+
+public abstract partial class AbstractBaseClass : IDeepCloneable<AbstractBaseClass>
+{
+    public string Name { get; set; } = "";
+    
+    public abstract AbstractBaseClass DeepClone();
+}
+
+public partial class ConcreteClass : AbstractBaseClass
+{
+    public int Value { get; set; }
+    
+    public override AbstractBaseClass DeepClone()
+    {
+        return new ConcreteClass
+        {
+            Name = this.Name,
+            Value = this.Value
+        };
+    }
 }

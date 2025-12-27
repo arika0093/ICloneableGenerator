@@ -2,6 +2,17 @@
 
 Automatic implementation generator for `IDeepCloneable<T>` and `IShallowCloneable<T>` interfaces via source generators.
 
+## Why ICloneableGenerator?
+
+**Perfect for 3rd-party library authors!** ICloneableGenerator enables library developers to provide cloning functionality without implementing clone methods in their base classes. Users of your library can simply implement the interface and get automatic clone implementations via source generation.
+
+### Key Benefits for Library Authors
+
+- 🏗️ **No Implementation Required**: Define interfaces without implementing clone methods
+- 📚 **User-Friendly**: Library users get automatic cloning by just adding the interface
+- 🔧 **Flexible**: Users can override with custom implementations when needed
+- 🎯 **NativeAOT Compatible**: Works with NativeAOT without reflection
+
 ## Features
 
 - 🚀 **Automatic Clone Implementation**: Automatically generates `DeepClone()` and `ShallowClone()` methods for partial classes
@@ -9,6 +20,7 @@ Automatic implementation generator for `IDeepCloneable<T>` and `IShallowCloneabl
 - 🎯 **NativeAOT Compatible**: Works with NativeAOT without reflection
 - 📦 **Zero Runtime Dependencies**: Uses source generators for compile-time code generation
 - 🛡️ **Type Safe**: Fully type-safe implementation with compile-time checking
+- 👪 **Inheritance Support**: Clones properties from entire inheritance chain, even if child classes don't implement the interface
 
 ## Installation
 
@@ -19,6 +31,47 @@ dotnet add package ICloneableGenerator
 ```
 
 ## Usage
+
+### For Library Authors
+
+Define your library classes with the cloneable interfaces without implementation:
+
+```csharp
+using ICloneableGenerator;
+
+namespace YourLibrary;
+
+// Library base class - just declare the interface
+public abstract partial class LibraryConfig : IDeepCloneable<LibraryConfig>
+{
+    public string Setting { get; set; }
+    // No need to implement DeepClone() - users will get it automatically!
+}
+
+// Library users can extend and get cloning for free
+```
+
+### For Library Users
+
+When using a 3rd-party library that uses ICloneableGenerator:
+
+```csharp
+using YourLibrary;
+
+// Just make your class partial - DeepClone() is auto-generated!
+public partial class MyConfig : LibraryConfig
+{
+    public int CustomValue { get; set; }
+    // DeepClone() automatically clones both base and derived properties
+}
+
+var config = new MyConfig 
+{ 
+    Setting = "base",
+    CustomValue = 42 
+};
+var clone = config.DeepClone(); // Works automatically!
+```
 
 ### Deep Cloning
 
