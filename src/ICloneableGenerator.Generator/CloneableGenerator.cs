@@ -102,6 +102,10 @@ public class CloneableGenerator : IIncrementalGenerator
     {
         var sb = new StringBuilder();
 
+        // Add necessary using statements
+        sb.AppendLine("using System.Linq;");
+        sb.AppendLine();
+
         if (classInfo.Namespace is not null)
         {
             sb.AppendLine($"namespace {classInfo.Namespace};");
@@ -217,7 +221,6 @@ public class CloneableGenerator : IIncrementalGenerator
             return $"this.{property.Name}";
 
         var elementType = collectionType.TypeArguments[0];
-        var elementTypeName = elementType.ToDisplayString();
 
         // Check if element type implements IDeepCloneable
         if (elementType is INamedTypeSymbol elementNamedType)
@@ -231,8 +234,8 @@ public class CloneableGenerator : IIncrementalGenerator
             }
         }
 
-        // For value types or types without IDeepCloneable, just create a new list
-        return $"this.{property.Name}?.ToList()";
+        // For value types or types without IDeepCloneable, create a new list with existing items
+        return $"this.{property.Name} != null ? new System.Collections.Generic.List<{elementType.ToDisplayString()}>(this.{property.Name}) : null";
     }
 
     private static List<IPropertySymbol> GetCloneableProperties(INamedTypeSymbol classSymbol)
