@@ -1,0 +1,16 @@
+<Solution>
+  <Configurations>
+    <Platform Name="Any CPU" />
+    <Platform Name="x64" />
+    <Platform Name="x86" />
+  </Configurations>
+  <Folder Name="/src/">
+    <File Path="src/Directory.Build.props" />
+    <Project Path="src/ICloneableGenerator.Generator/ICloneableGenerator.Generator.csproj" />
+    <Project Path="src/ICloneableGenerator/ICloneableGenerator.csproj" />
+  </Folder>
+  <Folder Name="/tests/">
+    <File Path="tests/Directory.Build.props" />
+    <Project Path="tests/ICloneableGenerator.Tests/ICloneableGenerator.Tests.csproj" />
+  </Folder>
+</Solution>
