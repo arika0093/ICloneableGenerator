@@ -11,11 +11,7 @@ public class ArrayCloneTests
     public void DeepClone_IntArray_ClonesArray()
     {
         // Arrange
-        var original = new ClassWithIntArray
-        {
-            Name = "Test",
-            Numbers = new[] { 1, 2, 3, 4, 5 }
-        };
+        var original = new ClassWithIntArray { Name = "Test", Numbers = new[] { 1, 2, 3, 4, 5 } };
 
         // Act
         var clone = original.DeepClone();
@@ -34,7 +30,7 @@ public class ArrayCloneTests
         var original = new ClassWithStringArray
         {
             Name = "Test",
-            Items = new[] { "one", "two", "three" }
+            Items = new[] { "one", "two", "three" },
         };
 
         // Act
@@ -57,8 +53,8 @@ public class ArrayCloneTests
             Items = new[]
             {
                 new SimpleClass { Name = "Item1", Age = 1 },
-                new SimpleClass { Name = "Item2", Age = 2 }
-            }
+                new SimpleClass { Name = "Item2", Age = 2 },
+            },
         };
 
         // Act
@@ -69,7 +65,7 @@ public class ArrayCloneTests
         clone.Items.ShouldNotBeNull();
         clone.Items.ShouldNotBeSameAs(original.Items);
         clone.Items.Length.ShouldBe(2);
-        
+
         // Each item should be a separate instance
         clone.Items[0].ShouldNotBeNull();
         clone.Items[0].ShouldNotBeSameAs(original.Items[0]);
@@ -88,8 +84,8 @@ public class ArrayCloneTests
             Name = "Parent",
             Items = new[]
             {
-                new SimpleClass { Name = "Original", Age = 10 }
-            }
+                new SimpleClass { Name = "Original", Age = 10 },
+            },
         };
 
         // Act
@@ -108,11 +104,7 @@ public class ArrayCloneTests
     public void DeepClone_NullArray_HandlesCorrectly()
     {
         // Arrange
-        var original = new ClassWithIntArray
-        {
-            Name = "Test",
-            Numbers = null
-        };
+        var original = new ClassWithIntArray { Name = "Test", Numbers = null };
 
         // Act
         var clone = original.DeepClone();
@@ -126,11 +118,7 @@ public class ArrayCloneTests
     public void DeepClone_EmptyArray_HandlesCorrectly()
     {
         // Arrange
-        var original = new ClassWithIntArray
-        {
-            Name = "Test",
-            Numbers = System.Array.Empty<int>()
-        };
+        var original = new ClassWithIntArray { Name = "Test", Numbers = System.Array.Empty<int>() };
 
         // Act
         var clone = original.DeepClone();
@@ -148,7 +136,11 @@ public class ArrayCloneTests
         var original = new ClassWithMultiDimensionalArray
         {
             Name = "Test",
-            Matrix = new int[,] { { 1, 2 }, { 3, 4 } }
+            Matrix = new int[,]
+            {
+                { 1, 2 },
+                { 3, 4 },
+            },
         };
 
         // Act

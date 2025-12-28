@@ -19,8 +19,8 @@ public class DictionaryCloneTests
             {
                 { "Alice", 100 },
                 { "Bob", 85 },
-                { "Charlie", 92 }
-            }
+                { "Charlie", 92 },
+            },
         };
 
         // Act
@@ -45,9 +45,15 @@ public class DictionaryCloneTests
             Name = "Test",
             Items = new Dictionary<string, SimpleClass>
             {
-                { "first", new SimpleClass { Name = "Item1", Age = 1 } },
-                { "second", new SimpleClass { Name = "Item2", Age = 2 } }
-            }
+                {
+                    "first",
+                    new SimpleClass { Name = "Item1", Age = 1 }
+                },
+                {
+                    "second",
+                    new SimpleClass { Name = "Item2", Age = 2 }
+                },
+            },
         };
 
         // Act
@@ -77,8 +83,11 @@ public class DictionaryCloneTests
             Name = "Test",
             Items = new Dictionary<string, SimpleClass>
             {
-                { "key", new SimpleClass { Name = "Original", Age = 10 } }
-            }
+                {
+                    "key",
+                    new SimpleClass { Name = "Original", Age = 10 }
+                },
+            },
         };
 
         // Act
@@ -94,11 +103,7 @@ public class DictionaryCloneTests
     public void DeepClone_NullDictionary_HandlesCorrectly()
     {
         // Arrange
-        var original = new ClassWithValueDictionary
-        {
-            Name = "Test",
-            Scores = null
-        };
+        var original = new ClassWithValueDictionary { Name = "Test", Scores = null };
 
         // Act
         var clone = original.DeepClone();
@@ -115,7 +120,7 @@ public class DictionaryCloneTests
         var original = new ClassWithValueDictionary
         {
             Name = "Test",
-            Scores = new Dictionary<string, int>()
+            Scores = new Dictionary<string, int>(),
         };
 
         // Act
@@ -139,8 +144,11 @@ public class DictionaryCloneTests
                 // Using null-forgiving operator here to test null handling in dictionaries
                 // This is safe because we're explicitly testing the null case
                 { "null-key", null! },
-                { "valid-key", new SimpleClass { Name = "Valid", Age = 5 } }
-            }
+                {
+                    "valid-key",
+                    new SimpleClass { Name = "Valid", Age = 5 }
+                },
+            },
         };
 
         // Act

@@ -17,7 +17,7 @@ public class AdvancedCollectionTests
         var original = new ClassWithStack
         {
             Name = "Test",
-            Items = new Stack<int>(new[] { 1, 2, 3 })
+            Items = new Stack<int>(new[] { 1, 2, 3 }),
         };
 
         // Act
@@ -28,7 +28,7 @@ public class AdvancedCollectionTests
         clone.Items.ShouldNotBeNull();
         clone.Items.ShouldNotBeSameAs(original.Items);
         clone.Items.Count.ShouldBe(3);
-        
+
         // Verify order (LIFO)
         clone.Items.Pop().ShouldBe(3);
         clone.Items.Pop().ShouldBe(2);
@@ -42,7 +42,7 @@ public class AdvancedCollectionTests
         var original = new ClassWithQueue
         {
             Name = "Test",
-            Items = new Queue<int>(new[] { 1, 2, 3 })
+            Items = new Queue<int>(new[] { 1, 2, 3 }),
         };
 
         // Act
@@ -53,7 +53,7 @@ public class AdvancedCollectionTests
         clone.Items.ShouldNotBeNull();
         clone.Items.ShouldNotBeSameAs(original.Items);
         clone.Items.Count.ShouldBe(3);
-        
+
         // Verify order (FIFO)
         clone.Items.Dequeue().ShouldBe(1);
         clone.Items.Dequeue().ShouldBe(2);
@@ -67,7 +67,7 @@ public class AdvancedCollectionTests
         var original = new ClassWithHashSet
         {
             Name = "Test",
-            Items = new HashSet<int> { 1, 2, 3, 4, 5 }
+            Items = new HashSet<int> { 1, 2, 3, 4, 5 },
         };
 
         // Act
@@ -88,7 +88,7 @@ public class AdvancedCollectionTests
         var original = new ClassWithSortedSet
         {
             Name = "Test",
-            Items = new SortedSet<int> { 3, 1, 4, 1, 5, 9 } // Duplicates are removed
+            Items = new SortedSet<int> { 3, 1, 4, 1, 5, 9 }, // Duplicates are removed
         };
 
         // Act
@@ -109,7 +109,7 @@ public class AdvancedCollectionTests
         var original = new ClassWithObservableCollection
         {
             Name = "Test",
-            Items = new ObservableCollection<int> { 1, 2, 3 }
+            Items = new ObservableCollection<int> { 1, 2, 3 },
         };
 
         // Act
@@ -130,7 +130,7 @@ public class AdvancedCollectionTests
         var original = new ClassWithReadOnlyCollection
         {
             Name = "Test",
-            Items = new ReadOnlyCollection<int>(new List<int> { 1, 2, 3 })
+            Items = new ReadOnlyCollection<int>(new List<int> { 1, 2, 3 }),
         };
 
         // Act
@@ -151,7 +151,7 @@ public class AdvancedCollectionTests
         var original = new ClassWithImmutableList
         {
             Name = "Test",
-            Items = ImmutableList.Create(1, 2, 3)
+            Items = ImmutableList.Create(1, 2, 3),
         };
 
         // Act
@@ -172,7 +172,7 @@ public class AdvancedCollectionTests
         var original = new ClassWithImmutableArray
         {
             Name = "Test",
-            Items = ImmutableArray.Create(1, 2, 3)
+            Items = ImmutableArray.Create(1, 2, 3),
         };
 
         // Act
@@ -192,7 +192,7 @@ public class AdvancedCollectionTests
         var original = new ClassWithImmutableHashSet
         {
             Name = "Test",
-            Items = ImmutableHashSet.Create(1, 2, 3)
+            Items = ImmutableHashSet.Create(1, 2, 3),
         };
 
         // Act
@@ -213,10 +213,11 @@ public class AdvancedCollectionTests
         var original = new ClassWithImmutableDictionary
         {
             Name = "Test",
-            Items = ImmutableDictionary.Create<string, int>()
+            Items = ImmutableDictionary
+                .Create<string, int>()
                 .Add("one", 1)
                 .Add("two", 2)
-                .Add("three", 3)
+                .Add("three", 3),
         };
 
         // Act
@@ -238,12 +239,14 @@ public class AdvancedCollectionTests
         var original = new ClassWithCloneableStack
         {
             Name = "Test",
-            Items = new Stack<SimpleClass>(new[]
-            {
-                new SimpleClass { Name = "Item3", Age = 3 },
-                new SimpleClass { Name = "Item2", Age = 2 },
-                new SimpleClass { Name = "Item1", Age = 1 }
-            })
+            Items = new Stack<SimpleClass>(
+                new[]
+                {
+                    new SimpleClass { Name = "Item3", Age = 3 },
+                    new SimpleClass { Name = "Item2", Age = 2 },
+                    new SimpleClass { Name = "Item1", Age = 1 },
+                }
+            ),
         };
 
         // Act
@@ -253,15 +256,15 @@ public class AdvancedCollectionTests
         clone.ShouldNotBeSameAs(original);
         clone.Items.ShouldNotBeNull();
         clone.Items.ShouldNotBeSameAs(original.Items);
-        
+
         // Verify deep clone of elements
         var clonedItem = clone.Items.Pop();
         clonedItem.ShouldNotBeNull();
         clonedItem.Name.ShouldBe("Item1");
-        
+
         // Modify cloned item
         clonedItem.Name = "Modified";
-        
+
         // Original should be unchanged
         original.Items.Peek().Name.ShouldBe("Item1");
     }

@@ -17,10 +17,11 @@ public class CloneableGenerator : IIncrementalGenerator
     public void Initialize(IncrementalGeneratorInitializationContext context)
     {
         // Find all partial classes that implement IDeepCloneable<T> or IShallowCloneable<T>
-        var classDeclarations = context.SyntaxProvider
-            .CreateSyntaxProvider(
+        var classDeclarations = context
+            .SyntaxProvider.CreateSyntaxProvider(
                 predicate: static (s, _) => IsCandidateType(s),
-                transform: static (ctx, _) => GetSemanticTargetForGeneration(ctx))
+                transform: static (ctx, _) => GetSemanticTargetForGeneration(ctx)
+            )
             .Where(static m => m is not null);
 
         // Generate the clone methods
@@ -32,12 +33,18 @@ public class CloneableGenerator : IIncrementalGenerator
 
     private static bool IsCandidateType(SyntaxNode node)
     {
-        return (node is ClassDeclarationSyntax classDeclaration &&
-                classDeclaration.Modifiers.Any(SyntaxKind.PartialKeyword)) ||
-               (node is RecordDeclarationSyntax recordDeclaration &&
-                recordDeclaration.Modifiers.Any(SyntaxKind.PartialKeyword)) ||
-               (node is StructDeclarationSyntax structDeclaration &&
-                structDeclaration.Modifiers.Any(SyntaxKind.PartialKeyword));
+        return (
+                node is ClassDeclarationSyntax classDeclaration
+                && classDeclaration.Modifiers.Any(SyntaxKind.PartialKeyword)
+            )
+            || (
+                node is RecordDeclarationSyntax recordDeclaration
+                && recordDeclaration.Modifiers.Any(SyntaxKind.PartialKeyword)
+            )
+            || (
+                node is StructDeclarationSyntax structDeclaration
+                && structDeclaration.Modifiers.Any(SyntaxKind.PartialKeyword)
+            );
     }
 
     private static ClassInfo? GetSemanticTargetForGeneration(GeneratorSyntaxContext context)
@@ -167,13 +174,15 @@ public class CloneableGenerator : IIncrementalGenerator
     private static string GenerateDeepCloneMethod(ClassInfo classInfo)
     {
         var properties = GetCloneableProperties(classInfo.ClassSymbol);
-        
+
         // Check if we need special handling for init-only properties
         bool hasInitOnlyProperties = properties.Any(p => p.SetMethod?.IsInitOnly == true);
-        
+
         // Check if any property needs special handling (requires statements before initialization)
-        var needsStatements = properties.Any(p => p.Type is IArrayTypeSymbol arrayType && arrayType.Rank > 1);
-        
+        var needsStatements = properties.Any(p =>
+            p.Type is IArrayTypeSymbol arrayType && arrayType.Rank > 1
+        );
+
         if (needsStatements || hasInitOnlyProperties)
         {
             // For types with init-only properties or complex arrays, we need special construction
@@ -187,9 +196,9 @@ public class CloneableGenerator : IIncrementalGenerator
                     var expression = GenerateDeepCloneExpression(property);
                     assignments.Add($"            {property.Name} = {expression}");
                 }
-                
+
                 var withAssignments = string.Join(",\n", assignments);
-                
+
                 return $@"    public {classInfo.ClassName} {DeepCloneMethodName}()
     {{
         return this with
@@ -205,17 +214,17 @@ public class CloneableGenerator : IIncrementalGenerator
                 // Generate method with statements for complex cases
                 var statements = new List<string>();
                 statements.Add($"        var clone = new {classInfo.ClassName}();");
-                
+
                 foreach (var property in properties)
                 {
                     var expression = GenerateDeepCloneExpression(property);
                     statements.Add($"        clone.{property.Name} = {expression};");
                 }
-                
+
                 statements.Add("        return clone;");
-                
+
                 var methodBody = string.Join("\n", statements);
-                
+
                 return $@"    public {classInfo.ClassName} {DeepCloneMethodName}()
     {{
 {methodBody}
@@ -227,19 +236,21 @@ public class CloneableGenerator : IIncrementalGenerator
         else
         {
             // Use object initializer for simple cases
-            var propertyAssignments = string.Join(",\n", properties.Select(p => 
-                $"        {p.Name} = {GenerateDeepCloneExpression(p)}"));
+            var propertyAssignments = string.Join(
+                ",\n",
+                properties.Select(p => $"        {p.Name} = {GenerateDeepCloneExpression(p)}")
+            );
 
             return $$"""
-                public {{classInfo.ClassName}} {{DeepCloneMethodName}}()
-                {
-                    return new {{classInfo.ClassName}}
+                    public {{classInfo.ClassName}} {{DeepCloneMethodName}}()
                     {
-            {{propertyAssignments}}
-                    };
-                }
+                        return new {{classInfo.ClassName}}
+                        {
+                {{propertyAssignments}}
+                        };
+                    }
 
-            """;
+                """;
         }
     }
 
@@ -313,7 +324,10 @@ public class CloneableGenerator : IIncrementalGenerator
     {
         // Check if type implements IDictionary<TKey, TValue>
         // This covers Dictionary, ImmutableDictionary, ReadOnlyDictionary, and any custom implementations
-        return type.AllInterfaces.Any(i => i.OriginalDefinition.ToDisplayString() == "System.Collections.Generic.IDictionary<TKey, TValue>");
+        return type.AllInterfaces.Any(i =>
+            i.OriginalDefinition.ToDisplayString()
+            == "System.Collections.Generic.IDictionary<TKey, TValue>"
+        );
     }
 
     private static bool IsCollectionType(INamedTypeSymbol type)
@@ -324,11 +338,14 @@ public class CloneableGenerator : IIncrementalGenerator
         );
     }
 
-    private static string GenerateArrayDeepClone(IPropertySymbol property, IArrayTypeSymbol arrayType)
+    private static string GenerateArrayDeepClone(
+        IPropertySymbol property,
+        IArrayTypeSymbol arrayType
+    )
     {
         var elementType = arrayType.ElementType;
         var propertyName = property.Name;
-        
+
         // For multi-dimensional arrays, we need special handling
         if (arrayType.Rank > 1)
         {
@@ -345,7 +362,9 @@ public class CloneableGenerator : IIncrementalGenerator
         if (elementType is INamedTypeSymbol elementNamedType)
         {
             var deepCloneableInterface = elementNamedType.AllInterfaces.FirstOrDefault(i =>
-                i.OriginalDefinition.ToDisplayString().StartsWith("ICloneableGenerator.IDeepCloneable"));
+                i.OriginalDefinition.ToDisplayString()
+                    .StartsWith("ICloneableGenerator.IDeepCloneable")
+            );
 
             if (deepCloneableInterface is not null)
             {
@@ -365,7 +384,10 @@ public class CloneableGenerator : IIncrementalGenerator
         return $"this.{propertyName} != null ? ({refArrayTypeName})this.{propertyName}.Clone() : null";
     }
 
-    private static string GenerateDictionaryDeepClone(IPropertySymbol property, INamedTypeSymbol dictionaryType)
+    private static string GenerateDictionaryDeepClone(
+        IPropertySymbol property,
+        INamedTypeSymbol dictionaryType
+    )
     {
         if (dictionaryType.TypeArguments.Length < 2)
             return $"this.{property.Name}";
@@ -380,7 +402,9 @@ public class CloneableGenerator : IIncrementalGenerator
         if (valueType is INamedTypeSymbol valueNamedType)
         {
             var deepCloneableInterface = valueNamedType.AllInterfaces.FirstOrDefault(i =>
-                i.OriginalDefinition.ToDisplayString().StartsWith("ICloneableGenerator.IDeepCloneable"));
+                i.OriginalDefinition.ToDisplayString()
+                    .StartsWith("ICloneableGenerator.IDeepCloneable")
+            );
             valueIsCloneable = deepCloneableInterface is not null;
         }
 
@@ -414,7 +438,10 @@ public class CloneableGenerator : IIncrementalGenerator
         return $"this.{propertyName} != null ? new System.Collections.Generic.Dictionary<{keyType.ToDisplayString()}, {valueType.ToDisplayString()}>(this.{propertyName}) : null";
     }
 
-    private static string GenerateCollectionDeepClone(IPropertySymbol property, INamedTypeSymbol collectionType)
+    private static string GenerateCollectionDeepClone(
+        IPropertySymbol property,
+        INamedTypeSymbol collectionType
+    )
     {
         if (collectionType.TypeArguments.Length == 0)
             return $"this.{property.Name}";
@@ -428,41 +455,43 @@ public class CloneableGenerator : IIncrementalGenerator
         if (elementType is INamedTypeSymbol elementNamedType)
         {
             var deepCloneableInterface = elementNamedType.AllInterfaces.FirstOrDefault(i =>
-                i.OriginalDefinition.ToDisplayString().StartsWith("ICloneableGenerator.IDeepCloneable"));
+                i.OriginalDefinition.ToDisplayString()
+                    .StartsWith("ICloneableGenerator.IDeepCloneable")
+            );
             isCloneable = deepCloneableInterface is not null;
         }
 
         // Handle specific collection types
         if (typeName == "System.Collections.Generic.Stack<T>")
             return GenerateStackClone(propertyName, elementType, isCloneable);
-        
+
         if (typeName == "System.Collections.Generic.Queue<T>")
             return GenerateQueueClone(propertyName, elementType, isCloneable);
-        
+
         if (typeName == "System.Collections.Generic.HashSet<T>")
             return GenerateHashSetClone(propertyName, elementType, isCloneable);
-        
+
         if (typeName == "System.Collections.Generic.SortedSet<T>")
             return GenerateSortedSetClone(propertyName, elementType, isCloneable);
-        
+
         if (typeName == "System.Collections.ObjectModel.ObservableCollection<T>")
             return GenerateObservableCollectionClone(propertyName, elementType, isCloneable);
-        
+
         if (typeName == "System.Collections.ObjectModel.ReadOnlyCollection<T>")
             return GenerateReadOnlyCollectionClone(propertyName, elementType, isCloneable);
-        
+
         if (typeName.StartsWith("System.Collections.Immutable.ImmutableList<"))
             return GenerateImmutableListClone(propertyName, elementType, isCloneable);
-        
+
         if (typeName.StartsWith("System.Collections.Immutable.ImmutableArray<"))
             return GenerateImmutableArrayClone(propertyName, elementType, isCloneable);
-        
+
         if (typeName.StartsWith("System.Collections.Immutable.ImmutableHashSet<"))
             return GenerateImmutableHashSetClone(propertyName, elementType, isCloneable);
-        
+
         if (typeName.StartsWith("System.Collections.Immutable.ImmutableQueue<"))
             return GenerateImmutableQueueClone(propertyName, elementType, isCloneable);
-        
+
         if (typeName.StartsWith("System.Collections.Immutable.ImmutableStack<"))
             return GenerateImmutableStackClone(propertyName, elementType, isCloneable);
 
@@ -470,7 +499,11 @@ public class CloneableGenerator : IIncrementalGenerator
         return GenerateDefaultListClone(propertyName, elementType, isCloneable);
     }
 
-    private static string GenerateStackClone(string propertyName, ITypeSymbol elementType, bool isCloneable)
+    private static string GenerateStackClone(
+        string propertyName,
+        ITypeSymbol elementType,
+        bool isCloneable
+    )
     {
         if (isCloneable)
         {
@@ -479,7 +512,11 @@ public class CloneableGenerator : IIncrementalGenerator
         return $"this.{propertyName} != null ? new System.Collections.Generic.Stack<{elementType.ToDisplayString()}>(this.{propertyName}.Reverse()) : null";
     }
 
-    private static string GenerateQueueClone(string propertyName, ITypeSymbol elementType, bool isCloneable)
+    private static string GenerateQueueClone(
+        string propertyName,
+        ITypeSymbol elementType,
+        bool isCloneable
+    )
     {
         if (isCloneable)
         {
@@ -488,7 +525,11 @@ public class CloneableGenerator : IIncrementalGenerator
         return $"this.{propertyName} != null ? new System.Collections.Generic.Queue<{elementType.ToDisplayString()}>(this.{propertyName}) : null";
     }
 
-    private static string GenerateHashSetClone(string propertyName, ITypeSymbol elementType, bool isCloneable)
+    private static string GenerateHashSetClone(
+        string propertyName,
+        ITypeSymbol elementType,
+        bool isCloneable
+    )
     {
         if (isCloneable)
         {
@@ -497,7 +538,11 @@ public class CloneableGenerator : IIncrementalGenerator
         return $"this.{propertyName} != null ? new System.Collections.Generic.HashSet<{elementType.ToDisplayString()}>(this.{propertyName}) : null";
     }
 
-    private static string GenerateSortedSetClone(string propertyName, ITypeSymbol elementType, bool isCloneable)
+    private static string GenerateSortedSetClone(
+        string propertyName,
+        ITypeSymbol elementType,
+        bool isCloneable
+    )
     {
         if (isCloneable)
         {
@@ -506,7 +551,11 @@ public class CloneableGenerator : IIncrementalGenerator
         return $"this.{propertyName} != null ? new System.Collections.Generic.SortedSet<{elementType.ToDisplayString()}>(this.{propertyName}) : null";
     }
 
-    private static string GenerateObservableCollectionClone(string propertyName, ITypeSymbol elementType, bool isCloneable)
+    private static string GenerateObservableCollectionClone(
+        string propertyName,
+        ITypeSymbol elementType,
+        bool isCloneable
+    )
     {
         if (isCloneable)
         {
@@ -515,7 +564,11 @@ public class CloneableGenerator : IIncrementalGenerator
         return $"this.{propertyName} != null ? new System.Collections.ObjectModel.ObservableCollection<{elementType.ToDisplayString()}>(this.{propertyName}) : null";
     }
 
-    private static string GenerateReadOnlyCollectionClone(string propertyName, ITypeSymbol elementType, bool isCloneable)
+    private static string GenerateReadOnlyCollectionClone(
+        string propertyName,
+        ITypeSymbol elementType,
+        bool isCloneable
+    )
     {
         if (isCloneable)
         {
@@ -524,7 +577,11 @@ public class CloneableGenerator : IIncrementalGenerator
         return $"this.{propertyName} != null ? new System.Collections.ObjectModel.ReadOnlyCollection<{elementType.ToDisplayString()}>(this.{propertyName}.ToList()) : null";
     }
 
-    private static string GenerateImmutableListClone(string propertyName, ITypeSymbol elementType, bool isCloneable)
+    private static string GenerateImmutableListClone(
+        string propertyName,
+        ITypeSymbol elementType,
+        bool isCloneable
+    )
     {
         if (isCloneable)
         {
@@ -533,7 +590,11 @@ public class CloneableGenerator : IIncrementalGenerator
         return $"this.{propertyName}?.ToImmutableList()";
     }
 
-    private static string GenerateImmutableArrayClone(string propertyName, ITypeSymbol elementType, bool isCloneable)
+    private static string GenerateImmutableArrayClone(
+        string propertyName,
+        ITypeSymbol elementType,
+        bool isCloneable
+    )
     {
         if (isCloneable)
         {
@@ -542,7 +603,11 @@ public class CloneableGenerator : IIncrementalGenerator
         return $"this.{propertyName}.IsDefault ? default : this.{propertyName}.ToImmutableArray()";
     }
 
-    private static string GenerateImmutableHashSetClone(string propertyName, ITypeSymbol elementType, bool isCloneable)
+    private static string GenerateImmutableHashSetClone(
+        string propertyName,
+        ITypeSymbol elementType,
+        bool isCloneable
+    )
     {
         if (isCloneable)
         {
@@ -551,7 +616,11 @@ public class CloneableGenerator : IIncrementalGenerator
         return $"this.{propertyName}?.ToImmutableHashSet()";
     }
 
-    private static string GenerateImmutableQueueClone(string propertyName, ITypeSymbol elementType, bool isCloneable)
+    private static string GenerateImmutableQueueClone(
+        string propertyName,
+        ITypeSymbol elementType,
+        bool isCloneable
+    )
     {
         if (isCloneable)
         {
@@ -560,7 +629,11 @@ public class CloneableGenerator : IIncrementalGenerator
         return $"this.{propertyName} == null ? System.Collections.Immutable.ImmutableQueue<{elementType.ToDisplayString()}>.Empty : System.Collections.Immutable.ImmutableQueue.CreateRange(this.{propertyName})";
     }
 
-    private static string GenerateImmutableStackClone(string propertyName, ITypeSymbol elementType, bool isCloneable)
+    private static string GenerateImmutableStackClone(
+        string propertyName,
+        ITypeSymbol elementType,
+        bool isCloneable
+    )
     {
         if (isCloneable)
         {
@@ -569,7 +642,11 @@ public class CloneableGenerator : IIncrementalGenerator
         return $"this.{propertyName} == null ? System.Collections.Immutable.ImmutableStack<{elementType.ToDisplayString()}>.Empty : System.Collections.Immutable.ImmutableStack.CreateRange(this.{propertyName})";
     }
 
-    private static string GenerateDefaultListClone(string propertyName, ITypeSymbol elementType, bool isCloneable)
+    private static string GenerateDefaultListClone(
+        string propertyName,
+        ITypeSymbol elementType,
+        bool isCloneable
+    )
     {
         if (isCloneable)
         {
@@ -589,20 +666,24 @@ public class CloneableGenerator : IIncrementalGenerator
         {
             foreach (var member in currentType.GetMembers())
             {
-                if (member is IPropertySymbol property &&
-                    !property.IsStatic &&
-                    property.GetMethod is not null &&
-                    !properties.Any(p => p.Name == property.Name)) // Avoid duplicates
+                if (
+                    member is IPropertySymbol property
+                    && !property.IsStatic
+                    && property.GetMethod is not null
+                    && !properties.Any(p => p.Name == property.Name)
+                ) // Avoid duplicates
                 {
                     // Include properties with:
                     // 1. Public setter
                     // 2. Public init accessor
-                    bool hasPublicSetter = property.SetMethod is not null && 
-                                          property.SetMethod.DeclaredAccessibility == Accessibility.Public;
-                    
-                    bool hasPublicInit = property.SetMethod is not null && 
-                                        property.SetMethod.IsInitOnly &&
-                                        property.SetMethod.DeclaredAccessibility == Accessibility.Public;
+                    bool hasPublicSetter =
+                        property.SetMethod is not null
+                        && property.SetMethod.DeclaredAccessibility == Accessibility.Public;
+
+                    bool hasPublicInit =
+                        property.SetMethod is not null
+                        && property.SetMethod.IsInitOnly
+                        && property.SetMethod.DeclaredAccessibility == Accessibility.Public;
 
                     if (hasPublicSetter || hasPublicInit)
                     {
@@ -622,6 +703,6 @@ public class CloneableGenerator : IIncrementalGenerator
         INamedTypeSymbol ClassSymbol,
         bool ShouldGenerateDeepClone,
         bool ShouldGenerateShallowClone,
-        string TypeKeyword  // "class", "record", "struct", or "record struct"
+        string TypeKeyword // "class", "record", "struct", or "record struct"
     );
 }

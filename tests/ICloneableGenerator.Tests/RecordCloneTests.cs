@@ -29,7 +29,7 @@ public class RecordCloneTests
         {
             FirstName = "John",
             LastName = "Doe",
-            Age = 25
+            Age = 25,
         };
 
         // Act
@@ -54,8 +54,8 @@ public class RecordCloneTests
             {
                 Street = "Main St",
                 City = "NYC",
-                ZipCode = "10001"
-            }
+                ZipCode = "10001",
+            },
         };
 
         // Act
@@ -74,11 +74,7 @@ public class RecordCloneTests
     public void DeepClone_RecordWithInitOnlyProperties_ClonesCorrectly()
     {
         // Arrange
-        var original = new RecordWithInitProps
-        {
-            Name = "Test",
-            Value = 42
-        };
+        var original = new RecordWithInitProps { Name = "Test", Value = 42 };
 
         // Act
         var clone = original.DeepClone();
@@ -111,7 +107,7 @@ public class RecordCloneTests
         var original = new RecordWithCollection
         {
             Name = "Test",
-            Tags = new System.Collections.Generic.List<string> { "tag1", "tag2", "tag3" }
+            Tags = new System.Collections.Generic.List<string> { "tag1", "tag2", "tag3" },
         };
 
         // Act
@@ -155,7 +151,8 @@ public partial record RecordWithInitProps : IDeepCloneable<RecordWithInitProps>
     public int Value { get; init; }
 }
 
-public partial record struct PointRecordStruct(double X, double Y) : IDeepCloneable<PointRecordStruct>;
+public partial record struct PointRecordStruct(double X, double Y)
+    : IDeepCloneable<PointRecordStruct>;
 
 public partial record RecordWithCollection : IDeepCloneable<RecordWithCollection>
 {
