@@ -13,7 +13,7 @@ public class DeepCloneTests
         {
             Name = "Test",
             Age = 25,
-            IsActive = true
+            IsActive = true,
         };
 
         // Act
@@ -30,11 +30,7 @@ public class DeepCloneTests
     public void DeepClone_ModifyingClone_DoesNotAffectOriginal()
     {
         // Arrange
-        var original = new SimpleClass
-        {
-            Name = "Original",
-            Age = 30
-        };
+        var original = new SimpleClass { Name = "Original", Age = 30 };
 
         // Act
         var clone = original.DeepClone();
@@ -53,10 +49,7 @@ public class DeepCloneTests
         var original = new ClassWithNested
         {
             Name = "Parent",
-            Nested = new NestedClass
-            {
-                Value = "Nested Value"
-            }
+            Nested = new NestedClass { Value = "Nested Value" },
         };
 
         // Act
@@ -75,10 +68,7 @@ public class DeepCloneTests
         var original = new ClassWithNested
         {
             Name = "Parent",
-            Nested = new NestedClass
-            {
-                Value = "Original Nested"
-            }
+            Nested = new NestedClass { Value = "Original Nested" },
         };
 
         // Act
@@ -93,11 +83,7 @@ public class DeepCloneTests
     public void DeepClone_NullNestedObject_HandlesCorrectly()
     {
         // Arrange
-        var original = new ClassWithNested
-        {
-            Name = "Parent",
-            Nested = null
-        };
+        var original = new ClassWithNested { Name = "Parent", Nested = null };
 
         // Act
         var clone = original.DeepClone();
