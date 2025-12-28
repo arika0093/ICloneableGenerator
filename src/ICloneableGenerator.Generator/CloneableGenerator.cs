@@ -29,14 +29,21 @@ public class CloneableGenerator : IIncrementalGenerator
 
     private static bool IsCandidateClass(SyntaxNode node)
     {
-        return node is ClassDeclarationSyntax classDeclaration &&
-               classDeclaration.Modifiers.Any(SyntaxKind.PartialKeyword);
+        return (node is ClassDeclarationSyntax classDeclaration &&
+                classDeclaration.Modifiers.Any(SyntaxKind.PartialKeyword)) ||
+               (node is RecordDeclarationSyntax recordDeclaration &&
+                recordDeclaration.Modifiers.Any(SyntaxKind.PartialKeyword)) ||
+               (node is StructDeclarationSyntax structDeclaration &&
+                structDeclaration.Modifiers.Any(SyntaxKind.PartialKeyword));
     }
 
     private static ClassInfo? GetSemanticTargetForGeneration(GeneratorSyntaxContext context)
     {
-        var classDeclaration = (ClassDeclarationSyntax)context.Node;
-        var classSymbol = context.SemanticModel.GetDeclaredSymbol(classDeclaration);
+        var typeDeclaration = context.Node as TypeDeclarationSyntax;
+        if (typeDeclaration is null)
+            return null;
+
+        var classSymbol = context.SemanticModel.GetDeclaredSymbol(typeDeclaration);
 
         if (classSymbol is null)
             return null;
@@ -63,12 +70,24 @@ public class CloneableGenerator : IIncrementalGenerator
         if (deepCloneableInterface is null && shallowCloneableInterface is null)
             return null;
 
+        // Determine type keyword
+        string typeKeyword;
+        if (classSymbol.IsRecord)
+        {
+            typeKeyword = classSymbol.IsValueType ? "record struct" : "record";
+        }
+        else
+        {
+            typeKeyword = classSymbol.IsValueType ? "struct" : "class";
+        }
+
         return new ClassInfo(
             classSymbol.Name,
             GetNamespace(classSymbol),
             classSymbol,
             deepCloneableInterface is not null && !hasDeepClone,
-            shallowCloneableInterface is not null && !hasShallowClone
+            shallowCloneableInterface is not null && !hasShallowClone,
+            typeKeyword
         );
     }
 
@@ -111,7 +130,7 @@ public class CloneableGenerator : IIncrementalGenerator
 
             {{namespaceDecl}}
 
-            partial class {{classInfo.ClassName}}
+            partial {{classInfo.TypeKeyword}} {{classInfo.ClassName}}
             {
             {{deepCloneMethod}}{{shallowCloneMethod}}
             }
@@ -122,29 +141,61 @@ public class CloneableGenerator : IIncrementalGenerator
     {
         var properties = GetCloneableProperties(classInfo.ClassSymbol);
         
+        // Check if we need special handling for init-only properties
+        bool hasInitOnlyProperties = properties.Any(p => p.SetMethod?.IsInitOnly == true);
+        
         // Check if any property needs special handling (requires statements before initialization)
         var needsStatements = properties.Any(p => p.Type is IArrayTypeSymbol arrayType && arrayType.Rank > 1);
         
-        if (needsStatements)
+        if (needsStatements || hasInitOnlyProperties)
         {
-            // Generate method with statements for complex cases
-            var statements = new System.Text.StringBuilder();
-            statements.AppendLine($"        var clone = new {classInfo.ClassName}();");
-            
-            foreach (var property in properties)
+            // For types with init-only properties or complex arrays, we need special construction
+            // For records and classes with init-only properties, use the with expression approach
+            if (classInfo.ClassSymbol.IsRecord && hasInitOnlyProperties)
             {
-                var expression = GenerateDeepCloneExpression(property);
-                statements.AppendLine($"        clone.{property.Name} = {expression};");
-            }
-            
-            statements.AppendLine("        return clone;");
-            
-            return $$"""
-                    public {{classInfo.ClassName}} {{DeepCloneMethodName}}()
-                    {
-            {{statements}}    }
+                // Use record's with-expression for cloning
+                var assignments = new List<string>();
+                foreach (var property in properties)
+                {
+                    var expression = GenerateDeepCloneExpression(property);
+                    assignments.Add($"            {property.Name} = {expression}");
+                }
+                
+                var withAssignments = string.Join(",\n", assignments);
+                
+                return $@"    public {classInfo.ClassName} {DeepCloneMethodName}()
+    {{
+        return this with
+        {{
+{withAssignments}
+        }};
+    }}
 
-            """;
+";
+            }
+            else
+            {
+                // Generate method with statements for complex cases
+                var statements = new List<string>();
+                statements.Add($"        var clone = new {classInfo.ClassName}();");
+                
+                foreach (var property in properties)
+                {
+                    var expression = GenerateDeepCloneExpression(property);
+                    statements.Add($"        clone.{property.Name} = {expression};");
+                }
+                
+                statements.Add("        return clone;");
+                
+                var methodBody = string.Join("\n", statements);
+                
+                return $@"    public {classInfo.ClassName} {DeepCloneMethodName}()
+    {{
+{methodBody}
+    }}
+
+";
+            }
         }
         else
         {
@@ -153,15 +204,15 @@ public class CloneableGenerator : IIncrementalGenerator
                 $"        {p.Name} = {GenerateDeepCloneExpression(p)}"));
 
             return $$"""
-                    public {{classInfo.ClassName}} {{DeepCloneMethodName}}()
+                public {{classInfo.ClassName}} {{DeepCloneMethodName}}()
+                {
+                    return new {{classInfo.ClassName}}
                     {
-                        return new {{classInfo.ClassName}}
-                        {
-                {{propertyAssignments}}
-                        };
-                    }
+            {{propertyAssignments}}
+                    };
+                }
 
-                """;
+            """;
         }
     }
 
@@ -486,13 +537,23 @@ public class CloneableGenerator : IIncrementalGenerator
             {
                 if (member is IPropertySymbol property &&
                     !property.IsStatic &&
-                    !property.IsReadOnly &&
-                    property.SetMethod is not null &&
-                    property.SetMethod.DeclaredAccessibility == Accessibility.Public &&
                     property.GetMethod is not null &&
                     !properties.Any(p => p.Name == property.Name)) // Avoid duplicates
                 {
-                    properties.Add(property);
+                    // Include properties with:
+                    // 1. Public setter
+                    // 2. Public init accessor
+                    bool hasPublicSetter = property.SetMethod is not null && 
+                                          property.SetMethod.DeclaredAccessibility == Accessibility.Public;
+                    
+                    bool hasPublicInit = property.SetMethod is not null && 
+                                        property.SetMethod.IsInitOnly &&
+                                        property.SetMethod.DeclaredAccessibility == Accessibility.Public;
+
+                    if (hasPublicSetter || hasPublicInit)
+                    {
+                        properties.Add(property);
+                    }
                 }
             }
             currentType = currentType.BaseType;
@@ -506,7 +567,8 @@ public class CloneableGenerator : IIncrementalGenerator
         string? Namespace,
         INamedTypeSymbol ClassSymbol,
         bool ShouldGenerateDeepClone,
-        bool ShouldGenerateShallowClone
+        bool ShouldGenerateShallowClone,
+        string TypeKeyword  // "class", "record", "struct", or "record struct"
     );
 }
 
