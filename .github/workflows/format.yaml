@@ -33,7 +33,7 @@ jobs:
         run: echo "$HOME/.dotnet/tools" >> $GITHUB_PATH
 
       - name: Run csharpier format
-        run: csharpier .
+        run: csharpier format .
 
       - name: Commit & Push
         uses: stefanzweifel/git-auto-commit-action@v5
