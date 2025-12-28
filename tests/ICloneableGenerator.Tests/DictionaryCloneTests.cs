@@ -136,6 +136,8 @@ public class DictionaryCloneTests
             Name = "Test",
             Items = new Dictionary<string, SimpleClass>
             {
+                // Using null-forgiving operator here to test null handling in dictionaries
+                // This is safe because we're explicitly testing the null case
                 { "null-key", null! },
                 { "valid-key", new SimpleClass { Name = "Valid", Age = 5 } }
             }

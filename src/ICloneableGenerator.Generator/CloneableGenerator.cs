@@ -19,7 +19,7 @@ public class CloneableGenerator : IIncrementalGenerator
         // Find all partial classes that implement IDeepCloneable<T> or IShallowCloneable<T>
         var classDeclarations = context.SyntaxProvider
             .CreateSyntaxProvider(
-                predicate: static (s, _) => IsCandidateClass(s),
+                predicate: static (s, _) => IsCandidateType(s),
                 transform: static (ctx, _) => GetSemanticTargetForGeneration(ctx))
             .Where(static m => m is not null);
 
@@ -27,7 +27,7 @@ public class CloneableGenerator : IIncrementalGenerator
         context.RegisterSourceOutput(classDeclarations, static (spc, source) => Execute(source!, spc));
     }
 
-    private static bool IsCandidateClass(SyntaxNode node)
+    private static bool IsCandidateType(SyntaxNode node)
     {
         return (node is ClassDeclarationSyntax classDeclaration &&
                 classDeclaration.Modifiers.Any(SyntaxKind.PartialKeyword)) ||
@@ -500,9 +500,9 @@ public class CloneableGenerator : IIncrementalGenerator
         {
             if (isCloneable)
             {
-                return $"System.Collections.Immutable.ImmutableQueue.CreateRange(this.{propertyName}?.Select(x => x?.{DeepCloneMethodName}()) ?? System.Linq.Enumerable.Empty<{elementType.ToDisplayString()}>())";
+                return $"this.{propertyName} == null ? System.Collections.Immutable.ImmutableQueue<{elementType.ToDisplayString()}>.Empty : System.Collections.Immutable.ImmutableQueue.CreateRange(this.{propertyName}.Select(x => x?.{DeepCloneMethodName}()))";
             }
-            return $"System.Collections.Immutable.ImmutableQueue.CreateRange(this.{propertyName} ?? System.Linq.Enumerable.Empty<{elementType.ToDisplayString()}>())";
+            return $"this.{propertyName} == null ? System.Collections.Immutable.ImmutableQueue<{elementType.ToDisplayString()}>.Empty : System.Collections.Immutable.ImmutableQueue.CreateRange(this.{propertyName})";
         }
 
         // ImmutableStack<T>
@@ -510,9 +510,9 @@ public class CloneableGenerator : IIncrementalGenerator
         {
             if (isCloneable)
             {
-                return $"System.Collections.Immutable.ImmutableStack.CreateRange(this.{propertyName}?.Select(x => x?.{DeepCloneMethodName}()) ?? System.Linq.Enumerable.Empty<{elementType.ToDisplayString()}>())";
+                return $"this.{propertyName} == null ? System.Collections.Immutable.ImmutableStack<{elementType.ToDisplayString()}>.Empty : System.Collections.Immutable.ImmutableStack.CreateRange(this.{propertyName}.Select(x => x?.{DeepCloneMethodName}()))";
             }
-            return $"System.Collections.Immutable.ImmutableStack.CreateRange(this.{propertyName} ?? System.Linq.Enumerable.Empty<{elementType.ToDisplayString()}>())";
+            return $"this.{propertyName} == null ? System.Collections.Immutable.ImmutableStack<{elementType.ToDisplayString()}>.Empty : System.Collections.Immutable.ImmutableStack.CreateRange(this.{propertyName})";
         }
 
         // Default: List<T> or IEnumerable<T>
