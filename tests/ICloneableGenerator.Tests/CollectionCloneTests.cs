@@ -18,8 +18,8 @@ public class CollectionCloneTests
             Items = new List<NestedClass>
             {
                 new NestedClass { Value = "Item1" },
-                new NestedClass { Value = "Item2" }
-            }
+                new NestedClass { Value = "Item2" },
+            },
         };
 
         // Act
@@ -29,7 +29,7 @@ public class CollectionCloneTests
         clone.ShouldNotBeSameAs(original);
         clone.Items.ShouldNotBeSameAs(original.Items);
         clone.Items.Count.ShouldBe(2);
-        
+
         // Each item should be a separate instance
         clone.Items[0].ShouldNotBeSameAs(original.Items[0]);
         clone.Items[0].Value.ShouldBe("Item1");
@@ -44,10 +44,7 @@ public class CollectionCloneTests
         var original = new ClassWithList
         {
             Name = "Parent",
-            Items = new List<NestedClass>
-            {
-                new NestedClass { Value = "Original" }
-            }
+            Items = new List<NestedClass> { new NestedClass { Value = "Original" } },
         };
 
         // Act
@@ -62,11 +59,7 @@ public class CollectionCloneTests
     public void DeepClone_NullList_HandlesCorrectly()
     {
         // Arrange
-        var original = new ClassWithList
-        {
-            Name = "Parent",
-            Items = null
-        };
+        var original = new ClassWithList { Name = "Parent", Items = null };
 
         // Act
         var clone = original.DeepClone();
@@ -83,7 +76,7 @@ public class CollectionCloneTests
         var original = new ClassWithValueList
         {
             Name = "Parent",
-            Numbers = new List<int> { 1, 2, 3 }
+            Numbers = new List<int> { 1, 2, 3 },
         };
 
         // Act

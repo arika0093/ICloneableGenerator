@@ -17,20 +17,24 @@ public class CloneableGenerator : IIncrementalGenerator
     public void Initialize(IncrementalGeneratorInitializationContext context)
     {
         // Find all partial classes that implement IDeepCloneable<T> or IShallowCloneable<T>
-        var classDeclarations = context.SyntaxProvider
-            .CreateSyntaxProvider(
+        var classDeclarations = context
+            .SyntaxProvider.CreateSyntaxProvider(
                 predicate: static (s, _) => IsCandidateClass(s),
-                transform: static (ctx, _) => GetSemanticTargetForGeneration(ctx))
+                transform: static (ctx, _) => GetSemanticTargetForGeneration(ctx)
+            )
             .Where(static m => m is not null);
 
         // Generate the clone methods
-        context.RegisterSourceOutput(classDeclarations, static (spc, source) => Execute(source!, spc));
+        context.RegisterSourceOutput(
+            classDeclarations,
+            static (spc, source) => Execute(source!, spc)
+        );
     }
 
     private static bool IsCandidateClass(SyntaxNode node)
     {
-        return node is ClassDeclarationSyntax classDeclaration &&
-               classDeclaration.Modifiers.Any(SyntaxKind.PartialKeyword);
+        return node is ClassDeclarationSyntax classDeclaration
+            && classDeclaration.Modifiers.Any(SyntaxKind.PartialKeyword);
     }
 
     private static ClassInfo? GetSemanticTargetForGeneration(GeneratorSyntaxContext context)
@@ -46,18 +50,30 @@ public class CloneableGenerator : IIncrementalGenerator
             return null;
 
         // Check if the class implements IDeepCloneable<T> or IShallowCloneable<T>
-        var deepCloneableInterface = FindCloneableInterface(classSymbol, "ICloneableGenerator.IDeepCloneable");
-        var shallowCloneableInterface = FindCloneableInterface(classSymbol, "ICloneableGenerator.IShallowCloneable");
+        var deepCloneableInterface = FindCloneableInterface(
+            classSymbol,
+            "ICloneableGenerator.IDeepCloneable"
+        );
+        var shallowCloneableInterface = FindCloneableInterface(
+            classSymbol,
+            "ICloneableGenerator.IShallowCloneable"
+        );
 
         if (deepCloneableInterface is null && shallowCloneableInterface is null)
             return null;
 
         // Check if the method is already implemented
-        bool hasDeepClone = deepCloneableInterface is not null && HasMethodImplementation(classSymbol, DeepCloneMethodName);
-        bool hasShallowClone = shallowCloneableInterface is not null && HasMethodImplementation(classSymbol, ShallowCloneMethodName);
+        bool hasDeepClone =
+            deepCloneableInterface is not null
+            && HasMethodImplementation(classSymbol, DeepCloneMethodName);
+        bool hasShallowClone =
+            shallowCloneableInterface is not null
+            && HasMethodImplementation(classSymbol, ShallowCloneMethodName);
 
-        if ((deepCloneableInterface is not null && hasDeepClone) &&
-            (shallowCloneableInterface is not null && hasShallowClone))
+        if (
+            (deepCloneableInterface is not null && hasDeepClone)
+            && (shallowCloneableInterface is not null && hasShallowClone)
+        )
             return null;
 
         if (deepCloneableInterface is null && shallowCloneableInterface is null)
@@ -72,16 +88,22 @@ public class CloneableGenerator : IIncrementalGenerator
         );
     }
 
-    private static INamedTypeSymbol? FindCloneableInterface(INamedTypeSymbol classSymbol, string interfaceName)
+    private static INamedTypeSymbol? FindCloneableInterface(
+        INamedTypeSymbol classSymbol,
+        string interfaceName
+    )
     {
         return classSymbol.AllInterfaces.FirstOrDefault(i =>
-            i.OriginalDefinition.ToDisplayString().StartsWith(interfaceName));
+            i.OriginalDefinition.ToDisplayString().StartsWith(interfaceName)
+        );
     }
 
     private static bool HasMethodImplementation(INamedTypeSymbol classSymbol, string methodName)
     {
-        return classSymbol.GetMembers(methodName).OfType<IMethodSymbol>().Any(m => 
-            !m.IsAbstract && m.DeclaringSyntaxReferences.Any());
+        return classSymbol
+            .GetMembers(methodName)
+            .OfType<IMethodSymbol>()
+            .Any(m => !m.IsAbstract && m.DeclaringSyntaxReferences.Any());
     }
 
     private static string? GetNamespace(ISymbol symbol)
@@ -101,9 +123,15 @@ public class CloneableGenerator : IIncrementalGenerator
 
     private static string GenerateCloneMethod(ClassInfo classInfo)
     {
-        var namespaceDecl = classInfo.Namespace is not null ? $"namespace {classInfo.Namespace};" : "";
-        var deepCloneMethod = classInfo.ShouldGenerateDeepClone ? GenerateDeepCloneMethod(classInfo) : "";
-        var shallowCloneMethod = classInfo.ShouldGenerateShallowClone ? GenerateShallowCloneMethod(classInfo) : "";
+        var namespaceDecl = classInfo.Namespace is not null
+            ? $"namespace {classInfo.Namespace};"
+            : "";
+        var deepCloneMethod = classInfo.ShouldGenerateDeepClone
+            ? GenerateDeepCloneMethod(classInfo)
+            : "";
+        var shallowCloneMethod = classInfo.ShouldGenerateShallowClone
+            ? GenerateShallowCloneMethod(classInfo)
+            : "";
 
         return $$"""
             using System.Linq;
@@ -120,8 +148,10 @@ public class CloneableGenerator : IIncrementalGenerator
     private static string GenerateDeepCloneMethod(ClassInfo classInfo)
     {
         var properties = GetCloneableProperties(classInfo.ClassSymbol);
-        var propertyAssignments = string.Join(",\n", properties.Select(p => 
-            $"        {p.Name} = {GenerateDeepCloneExpression(p)}"));
+        var propertyAssignments = string.Join(
+            ",\n",
+            properties.Select(p => $"        {p.Name} = {GenerateDeepCloneExpression(p)}")
+        );
 
         return $$"""
                 public {{classInfo.ClassName}} {{DeepCloneMethodName}}()
@@ -138,8 +168,10 @@ public class CloneableGenerator : IIncrementalGenerator
     private static string GenerateShallowCloneMethod(ClassInfo classInfo)
     {
         var properties = GetCloneableProperties(classInfo.ClassSymbol);
-        var propertyAssignments = string.Join(",\n", properties.Select(p => 
-            $"        {p.Name} = this.{p.Name}"));
+        var propertyAssignments = string.Join(
+            ",\n",
+            properties.Select(p => $"        {p.Name} = this.{p.Name}")
+        );
 
         return $$"""
                 public {{classInfo.ClassName}} {{ShallowCloneMethodName}}()
@@ -161,7 +193,9 @@ public class CloneableGenerator : IIncrementalGenerator
         if (typeSymbol is INamedTypeSymbol namedType)
         {
             var deepCloneableInterface = namedType.AllInterfaces.FirstOrDefault(i =>
-                i.OriginalDefinition.ToDisplayString().StartsWith("ICloneableGenerator.IDeepCloneable"));
+                i.OriginalDefinition.ToDisplayString()
+                    .StartsWith("ICloneableGenerator.IDeepCloneable")
+            );
 
             if (deepCloneableInterface is not null)
             {
@@ -188,11 +222,15 @@ public class CloneableGenerator : IIncrementalGenerator
     private static bool IsCollectionType(INamedTypeSymbol type)
     {
         // Check if type implements IEnumerable<T>
-        return type.AllInterfaces.Any(i => 
-            i.OriginalDefinition.ToDisplayString() == "System.Collections.Generic.IEnumerable<T>");
+        return type.AllInterfaces.Any(i =>
+            i.OriginalDefinition.ToDisplayString() == "System.Collections.Generic.IEnumerable<T>"
+        );
     }
 
-    private static string GenerateCollectionDeepClone(IPropertySymbol property, INamedTypeSymbol collectionType)
+    private static string GenerateCollectionDeepClone(
+        IPropertySymbol property,
+        INamedTypeSymbol collectionType
+    )
     {
         if (collectionType.TypeArguments.Length == 0)
             return $"this.{property.Name}";
@@ -203,7 +241,9 @@ public class CloneableGenerator : IIncrementalGenerator
         if (elementType is INamedTypeSymbol elementNamedType)
         {
             var deepCloneableInterface = elementNamedType.AllInterfaces.FirstOrDefault(i =>
-                i.OriginalDefinition.ToDisplayString().StartsWith("ICloneableGenerator.IDeepCloneable"));
+                i.OriginalDefinition.ToDisplayString()
+                    .StartsWith("ICloneableGenerator.IDeepCloneable")
+            );
 
             if (deepCloneableInterface is not null)
             {
@@ -225,13 +265,15 @@ public class CloneableGenerator : IIncrementalGenerator
         {
             foreach (var member in currentType.GetMembers())
             {
-                if (member is IPropertySymbol property &&
-                    !property.IsStatic &&
-                    !property.IsReadOnly &&
-                    property.SetMethod is not null &&
-                    property.SetMethod.DeclaredAccessibility == Accessibility.Public &&
-                    property.GetMethod is not null &&
-                    !properties.Any(p => p.Name == property.Name)) // Avoid duplicates
+                if (
+                    member is IPropertySymbol property
+                    && !property.IsStatic
+                    && !property.IsReadOnly
+                    && property.SetMethod is not null
+                    && property.SetMethod.DeclaredAccessibility == Accessibility.Public
+                    && property.GetMethod is not null
+                    && !properties.Any(p => p.Name == property.Name)
+                ) // Avoid duplicates
                 {
                     properties.Add(property);
                 }
@@ -250,4 +292,3 @@ public class CloneableGenerator : IIncrementalGenerator
         bool ShouldGenerateShallowClone
     );
 }
-

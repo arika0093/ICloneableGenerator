@@ -9,10 +9,7 @@ public class GeneratorBehaviorTests
     public void PartialClass_ImplementsInterface_GeneratesMethod()
     {
         // Arrange
-        var original = new PartialTestClass
-        {
-            Name = "Test"
-        };
+        var original = new PartialTestClass { Name = "Test" };
 
         // Act
         var clone = original.DeepClone();
@@ -26,11 +23,7 @@ public class GeneratorBehaviorTests
     public void ManualImplementation_IsUsed()
     {
         // Arrange
-        var original = new ManualImplementationClass
-        {
-            Name = "Test",
-            CustomValue = 42
-        };
+        var original = new ManualImplementationClass { Name = "Test", CustomValue = 42 };
 
         // Act
         var clone = original.DeepClone();
@@ -45,11 +38,7 @@ public class GeneratorBehaviorTests
     public void BothInterfaces_GeneratesBothMethods()
     {
         // Arrange
-        var original = new BothInterfacesClass
-        {
-            Name = "Test",
-            Value = 123
-        };
+        var original = new BothInterfacesClass { Name = "Test", Value = 123 };
 
         // Act
         var deepClone = original.DeepClone();
@@ -69,10 +58,7 @@ public class GeneratorBehaviorTests
     public void InterfaceInheritance_GeneratesMethod()
     {
         // Arrange
-        var original = new DerivedInterfaceClass
-        {
-            Name = "Test"
-        };
+        var original = new DerivedInterfaceClass { Name = "Test" };
 
         // Act
         var clone = original.DeepClone();
@@ -86,11 +72,7 @@ public class GeneratorBehaviorTests
     public void AbstractClass_ImplementsInterface_GeneratesMethod()
     {
         // Arrange
-        var original = new ConcreteClass
-        {
-            Name = "Test",
-            Value = 42
-        };
+        var original = new ConcreteClass { Name = "Test", Value = 42 };
 
         // Act
         var clone = (ConcreteClass)original.DeepClone();
@@ -118,20 +100,20 @@ public partial class ManualImplementationClass : IDeepCloneable<ManualImplementa
         return new ManualImplementationClass
         {
             Name = this.Name,
-            CustomValue = 100 // Custom implementation
+            CustomValue = 100, // Custom implementation
         };
     }
 }
 
-public partial class BothInterfacesClass : IDeepCloneable<BothInterfacesClass>, IShallowCloneable<BothInterfacesClass>
+public partial class BothInterfacesClass
+    : IDeepCloneable<BothInterfacesClass>,
+        IShallowCloneable<BothInterfacesClass>
 {
     public string Name { get; set; } = "";
     public int Value { get; set; }
 }
 
-public interface ICustomCloneable : IDeepCloneable<DerivedInterfaceClass>
-{
-}
+public interface ICustomCloneable : IDeepCloneable<DerivedInterfaceClass> { }
 
 public partial class DerivedInterfaceClass : ICustomCloneable
 {
@@ -141,20 +123,16 @@ public partial class DerivedInterfaceClass : ICustomCloneable
 public abstract partial class AbstractBaseClass : IDeepCloneable<AbstractBaseClass>
 {
     public string Name { get; set; } = "";
-    
+
     public abstract AbstractBaseClass DeepClone();
 }
 
 public partial class ConcreteClass : AbstractBaseClass
 {
     public int Value { get; set; }
-    
+
     public override AbstractBaseClass DeepClone()
     {
-        return new ConcreteClass
-        {
-            Name = this.Name,
-            Value = this.Value
-        };
+        return new ConcreteClass { Name = this.Name, Value = this.Value };
     }
 }

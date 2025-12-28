@@ -13,7 +13,7 @@ public class ShallowCloneTests
         {
             Name = "Test",
             Age = 25,
-            IsActive = true
+            IsActive = true,
         };
 
         // Act
@@ -31,11 +31,7 @@ public class ShallowCloneTests
     {
         // Arrange
         var nested = new NestedShallowClass { Value = "Shared" };
-        var original = new ClassWithNestedShallow
-        {
-            Name = "Parent",
-            Nested = nested
-        };
+        var original = new ClassWithNestedShallow { Name = "Parent", Nested = nested };
 
         // Act
         var clone = original.ShallowClone();
@@ -52,7 +48,7 @@ public class ShallowCloneTests
         var original = new ClassWithNestedShallow
         {
             Name = "Parent",
-            Nested = new NestedShallowClass { Value = "Original" }
+            Nested = new NestedShallowClass { Value = "Original" },
         };
 
         // Act
@@ -67,11 +63,7 @@ public class ShallowCloneTests
     public void ShallowClone_NullNestedObject_HandlesCorrectly()
     {
         // Arrange
-        var original = new ClassWithNestedShallow
-        {
-            Name = "Parent",
-            Nested = null
-        };
+        var original = new ClassWithNestedShallow { Name = "Parent", Nested = null };
 
         // Act
         var clone = original.ShallowClone();
