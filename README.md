@@ -1,4 +1,5 @@
 # IDeepCloneable
+[![NuGet Version](https://img.shields.io/nuget/v/IDeepCloneable?style=flat-square&logo=NuGet&color=0080CC)](https://www.nuget.org/packages/IDeepCloneable/) ![GitHub Actions Workflow Status](https://img.shields.io/github/actions/workflow/status/arika0093/IDeepCloneable/test.yaml?branch=main&label=Test&style=flat-square) 
 
 Automatic implementation of the `IDeepCloneable<T>` interface via source generators. For library authors.
 
