@@ -97,11 +97,11 @@ public class CloneableGenerator : IIncrementalGenerator
         {
             if (i.OriginalDefinition.Name != "IDeepCloneable")
                 return false;
-            
+
             var ns = i.OriginalDefinition.ContainingNamespace;
             if (ns == null)
                 return false;
-                
+
             return ns.ToDisplayString() == "IDeepCloneable";
         });
     }
@@ -137,7 +137,6 @@ public class CloneableGenerator : IIncrementalGenerator
 
         if (classInfo.Namespace is not null)
         {
-            // Use block-scoped namespace to avoid .NET 10 issues with file-scoped namespaces
             return $$"""
                 using System.Linq;
                 using System.Collections.Immutable;
@@ -187,15 +186,15 @@ public class CloneableGenerator : IIncrementalGenerator
 
                 var withAssignments = string.Join(",\n", assignments);
 
-                return $@"    public {classInfo.ClassName} {DeepCloneMethodName}()
-    {{
-        return this with
-        {{
-{withAssignments}
-        }};
-    }}
-
-";
+                return $$"""
+                    public {{classInfo.ClassName}} {{DeepCloneMethodName}}()
+                    {
+                        return this with
+                        {
+                    {{withAssignments}}
+                        };
+                    }
+                    """;
             }
             else
             {
@@ -212,25 +211,25 @@ public class CloneableGenerator : IIncrementalGenerator
 
                 var methodBody = string.Join("\n", statements);
 
-                return $@"    public {classInfo.ClassName} {DeepCloneMethodName}()
-    {{
-{methodBody}
-    }}
-
-";
+                return $$"""
+                    public {{classInfo.ClassName}} {{DeepCloneMethodName}}()
+                    {
+                    {{methodBody}}
+                    }
+                    """;
             }
         }
         else
         {
             var propertyAssignments = string.Join(
                 ",\n",
-                properties.Select(p => $"        {p.Name} = {GenerateDeepCloneExpression(p)}")
+                properties.Select(p => $"            {p.Name} = {GenerateDeepCloneExpression(p)}")
             );
 
             return $$"""
-                    public {classInfo.ClassName} {DeepCloneMethodName}()
+                    public {{classInfo.ClassName}} {{DeepCloneMethodName}}()
                     {
-                        return new {classInfo.ClassName}
+                        return new {{classInfo.ClassName}}
                         {
                 {{propertyAssignments}}
                         };
