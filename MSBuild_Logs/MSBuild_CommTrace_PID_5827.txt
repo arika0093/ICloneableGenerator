@@ -1,0 +1,261 @@
+ (TID 1) 639027610562818383 +    11.756ms: Command line parameters: System.String[]
+.NET TP Worker (TID 10) 639027610567415914 +  411.8782ms: Starting to acquire 1 new or existing node(s) to establish nodes from ID 2 to 2...
+.NET TP Worker (TID 10) 639027610567423855 +    0.7941ms: Building handshake for node type X64, NodeReuse, (version 1): options 16777228.
+.NET TP Worker (TID 10) 639027610567424285 +     0.043ms: Handshake salt is 
+.NET TP Worker (TID 10) 639027610567424409 +    0.0124ms: Tools directory root is /usr/share/dotnet/sdk/10.0.101
+.NET TP Worker (TID 10) 639027610567522462 +    9.8053ms: Attempting to connect to 21 existing processes 'dotnet'...
+.NET TP Worker (TID 4) 639027610567574279 +    5.1817ms: Trying to connect to existing process dotnet with id 3531 to establish node 2...
+.NET TP Worker (TID 4) 639027610567585391 +    1.1112ms: Attempting connect to PID 3531 with pipe /tmp/MSBuild3531 with timeout 0 ms
+.NET TP Worker (TID 4) 639027610567591445 +    0.6054ms: Writing handshake part Options (16777228) to pipe /tmp/MSBuild3531
+.NET TP Worker (TID 4) 639027610567593842 +    0.2397ms: Writing handshake part Salt (1312470924) to pipe /tmp/MSBuild3531
+.NET TP Worker (TID 4) 639027610567594353 +    0.0511ms: Writing handshake part FileVersionMajor (18) to pipe /tmp/MSBuild3531
+.NET TP Worker (TID 4) 639027610567594569 +    0.0216ms: Writing handshake part FileVersionMinor (0) to pipe /tmp/MSBuild3531
+.NET TP Worker (TID 4) 639027610567594764 +    0.0195ms: Writing handshake part FileVersionBuild (6) to pipe /tmp/MSBuild3531
+.NET TP Worker (TID 4) 639027610567594945 +    0.0181ms: Writing handshake part FileVersionPrivate (57005) to pipe /tmp/MSBuild3531
+.NET TP Worker (TID 4) 639027610567595268 +    0.0323ms: Writing handshake part SessionId (5825) to pipe /tmp/MSBuild3531
+.NET TP Worker (TID 4) 639027610567595617 +    0.0349ms: Reading handshake from pipe /tmp/MSBuild3531
+.NET TP Worker (TID 4) 639027610567600328 +    0.4711ms: Handshake failed on part 7. Probably the client is a different MSBuild build.
+.NET TP Worker (TID 4) 639027610567600766 +    0.0438ms: Failed to connect to pipe /tmp/MSBuild3531. Handshake failed on part 7. Probably the client is a different MSBuild build.
+.NET TP Worker (TID 4) 639027610567601574 +    0.0808ms: Trying to connect to existing process dotnet with id 3532 to establish node 2...
+.NET TP Worker (TID 4) 639027610567602349 +    0.0775ms: Attempting connect to PID 3532 with pipe /tmp/MSBuild3532 with timeout 0 ms
+.NET TP Worker (TID 4) 639027610567603231 +    0.0882ms: Writing handshake part Options (16777228) to pipe /tmp/MSBuild3532
+.NET TP Worker (TID 4) 639027610567603497 +    0.0266ms: Writing handshake part Salt (1312470924) to pipe /tmp/MSBuild3532
+.NET TP Worker (TID 4) 639027610567603687 +     0.019ms: Writing handshake part FileVersionMajor (18) to pipe /tmp/MSBuild3532
+.NET TP Worker (TID 4) 639027610567603872 +    0.0185ms: Writing handshake part FileVersionMinor (0) to pipe /tmp/MSBuild3532
+.NET TP Worker (TID 4) 639027610567604064 +    0.0192ms: Writing handshake part FileVersionBuild (6) to pipe /tmp/MSBuild3532
+.NET TP Worker (TID 4) 639027610567604244 +     0.018ms: Writing handshake part FileVersionPrivate (57005) to pipe /tmp/MSBuild3532
+.NET TP Worker (TID 4) 639027610567604439 +    0.0195ms: Writing handshake part SessionId (5825) to pipe /tmp/MSBuild3532
+.NET TP Worker (TID 4) 639027610567604714 +    0.0275ms: Reading handshake from pipe /tmp/MSBuild3532
+.NET TP Worker (TID 4) 639027610567622110 +    1.7396ms: Handshake failed on part 7. Probably the client is a different MSBuild build.
+.NET TP Worker (TID 4) 639027610567622500 +     0.039ms: Failed to connect to pipe /tmp/MSBuild3532. Handshake failed on part 7. Probably the client is a different MSBuild build.
+.NET TP Worker (TID 4) 639027610567622904 +    0.0404ms: Trying to connect to existing process dotnet with id 3622 to establish node 2...
+.NET TP Worker (TID 4) 639027610567623174 +     0.027ms: Attempting connect to PID 3622 with pipe /tmp/MSBuild3622 with timeout 0 ms
+.NET TP Worker (TID 4) 639027610567623724 +     0.055ms: Writing handshake part Options (16777228) to pipe /tmp/MSBuild3622
+.NET TP Worker (TID 4) 639027610567624075 +    0.0351ms: Writing handshake part Salt (1312470924) to pipe /tmp/MSBuild3622
+.NET TP Worker (TID 4) 639027610567624298 +    0.0223ms: Writing handshake part FileVersionMajor (18) to pipe /tmp/MSBuild3622
+.NET TP Worker (TID 4) 639027610567624509 +    0.0211ms: Writing handshake part FileVersionMinor (0) to pipe /tmp/MSBuild3622
+.NET TP Worker (TID 4) 639027610567624713 +    0.0204ms: Writing handshake part FileVersionBuild (6) to pipe /tmp/MSBuild3622
+.NET TP Worker (TID 4) 639027610567624924 +    0.0211ms: Writing handshake part FileVersionPrivate (57005) to pipe /tmp/MSBuild3622
+.NET TP Worker (TID 4) 639027610567625349 +    0.0425ms: Writing handshake part SessionId (5825) to pipe /tmp/MSBuild3622
+.NET TP Worker (TID 4) 639027610567625623 +    0.0274ms: Reading handshake from pipe /tmp/MSBuild3622
+.NET TP Worker (TID 4) 639027610567636081 +    1.0458ms: Handshake failed on part 7. Probably the client is a different MSBuild build.
+.NET TP Worker (TID 4) 639027610567636425 +    0.0344ms: Failed to connect to pipe /tmp/MSBuild3622. Handshake failed on part 7. Probably the client is a different MSBuild build.
+.NET TP Worker (TID 4) 639027610567636773 +    0.0348ms: Trying to connect to existing process dotnet with id 3623 to establish node 2...
+.NET TP Worker (TID 4) 639027610567637055 +    0.0282ms: Attempting connect to PID 3623 with pipe /tmp/MSBuild3623 with timeout 0 ms
+.NET TP Worker (TID 4) 639027610567637578 +    0.0523ms: Writing handshake part Options (16777228) to pipe /tmp/MSBuild3623
+.NET TP Worker (TID 4) 639027610567637847 +    0.0269ms: Writing handshake part Salt (1312470924) to pipe /tmp/MSBuild3623
+.NET TP Worker (TID 4) 639027610567638062 +    0.0215ms: Writing handshake part FileVersionMajor (18) to pipe /tmp/MSBuild3623
+.NET TP Worker (TID 4) 639027610567638276 +    0.0214ms: Writing handshake part FileVersionMinor (0) to pipe /tmp/MSBuild3623
+.NET TP Worker (TID 4) 639027610567638482 +    0.0206ms: Writing handshake part FileVersionBuild (6) to pipe /tmp/MSBuild3623
+.NET TP Worker (TID 4) 639027610567638680 +    0.0198ms: Writing handshake part FileVersionPrivate (57005) to pipe /tmp/MSBuild3623
+.NET TP Worker (TID 4) 639027610567638874 +    0.0194ms: Writing handshake part SessionId (5825) to pipe /tmp/MSBuild3623
+.NET TP Worker (TID 4) 639027610567639077 +    0.0203ms: Reading handshake from pipe /tmp/MSBuild3623
+.NET TP Worker (TID 4) 639027610567657929 +    1.8852ms: Handshake failed on part 7. Probably the client is a different MSBuild build.
+.NET TP Worker (TID 4) 639027610567658325 +    0.0396ms: Failed to connect to pipe /tmp/MSBuild3623. Handshake failed on part 7. Probably the client is a different MSBuild build.
+.NET TP Worker (TID 4) 639027610567658713 +    0.0388ms: Trying to connect to existing process dotnet with id 3734 to establish node 2...
+.NET TP Worker (TID 4) 639027610567659003 +     0.029ms: Attempting connect to PID 3734 with pipe /tmp/MSBuild3734 with timeout 0 ms
+.NET TP Worker (TID 4) 639027610567660430 +    0.1427ms: Writing handshake part Options (16777228) to pipe /tmp/MSBuild3734
+.NET TP Worker (TID 4) 639027610567660756 +    0.0326ms: Writing handshake part Salt (1312470924) to pipe /tmp/MSBuild3734
+.NET TP Worker (TID 4) 639027610567660954 +    0.0198ms: Writing handshake part FileVersionMajor (18) to pipe /tmp/MSBuild3734
+.NET TP Worker (TID 4) 639027610567661148 +    0.0194ms: Writing handshake part FileVersionMinor (0) to pipe /tmp/MSBuild3734
+.NET TP Worker (TID 4) 639027610567661336 +    0.0188ms: Writing handshake part FileVersionBuild (6) to pipe /tmp/MSBuild3734
+.NET TP Worker (TID 4) 639027610567661532 +    0.0196ms: Writing handshake part FileVersionPrivate (57005) to pipe /tmp/MSBuild3734
+.NET TP Worker (TID 4) 639027610567661723 +    0.0191ms: Writing handshake part SessionId (5825) to pipe /tmp/MSBuild3734
+.NET TP Worker (TID 4) 639027610567661918 +    0.0195ms: Reading handshake from pipe /tmp/MSBuild3734
+.NET TP Worker (TID 4) 639027610567683280 +    2.1362ms: Handshake failed on part 7. Probably the client is a different MSBuild build.
+.NET TP Worker (TID 4) 639027610567683750 +     0.047ms: Failed to connect to pipe /tmp/MSBuild3734. Handshake failed on part 7. Probably the client is a different MSBuild build.
+.NET TP Worker (TID 4) 639027610567684149 +    0.0399ms: Trying to connect to existing process dotnet with id 3735 to establish node 2...
+.NET TP Worker (TID 4) 639027610567684443 +    0.0294ms: Attempting connect to PID 3735 with pipe /tmp/MSBuild3735 with timeout 0 ms
+.NET TP Worker (TID 4) 639027610567684976 +    0.0533ms: Writing handshake part Options (16777228) to pipe /tmp/MSBuild3735
+.NET TP Worker (TID 4) 639027610567685414 +    0.0438ms: Writing handshake part Salt (1312470924) to pipe /tmp/MSBuild3735
+.NET TP Worker (TID 4) 639027610567685665 +    0.0251ms: Writing handshake part FileVersionMajor (18) to pipe /tmp/MSBuild3735
+.NET TP Worker (TID 4) 639027610567685858 +    0.0193ms: Writing handshake part FileVersionMinor (0) to pipe /tmp/MSBuild3735
+.NET TP Worker (TID 4) 639027610567686057 +    0.0199ms: Writing handshake part FileVersionBuild (6) to pipe /tmp/MSBuild3735
+.NET TP Worker (TID 4) 639027610567686225 +    0.0168ms: Writing handshake part FileVersionPrivate (57005) to pipe /tmp/MSBuild3735
+.NET TP Worker (TID 4) 639027610567686422 +    0.0197ms: Writing handshake part SessionId (5825) to pipe /tmp/MSBuild3735
+.NET TP Worker (TID 4) 639027610567686620 +    0.0198ms: Reading handshake from pipe /tmp/MSBuild3735
+.NET TP Worker (TID 4) 639027610567716335 +    2.9715ms: Handshake failed on part 7. Probably the client is a different MSBuild build.
+.NET TP Worker (TID 4) 639027610567716702 +    0.0367ms: Failed to connect to pipe /tmp/MSBuild3735. Handshake failed on part 7. Probably the client is a different MSBuild build.
+.NET TP Worker (TID 4) 639027610567717030 +    0.0328ms: Trying to connect to existing process dotnet with id 3867 to establish node 2...
+.NET TP Worker (TID 4) 639027610567717291 +    0.0261ms: Attempting connect to PID 3867 with pipe /tmp/MSBuild3867 with timeout 0 ms
+.NET TP Worker (TID 4) 639027610567717807 +    0.0516ms: Writing handshake part Options (16777228) to pipe /tmp/MSBuild3867
+.NET TP Worker (TID 4) 639027610567718074 +    0.0267ms: Writing handshake part Salt (1312470924) to pipe /tmp/MSBuild3867
+.NET TP Worker (TID 4) 639027610567718284 +     0.021ms: Writing handshake part FileVersionMajor (18) to pipe /tmp/MSBuild3867
+.NET TP Worker (TID 4) 639027610567718476 +    0.0192ms: Writing handshake part FileVersionMinor (0) to pipe /tmp/MSBuild3867
+.NET TP Worker (TID 4) 639027610567718665 +    0.0189ms: Writing handshake part FileVersionBuild (6) to pipe /tmp/MSBuild3867
+.NET TP Worker (TID 4) 639027610567718856 +    0.0191ms: Writing handshake part FileVersionPrivate (57005) to pipe /tmp/MSBuild3867
+.NET TP Worker (TID 4) 639027610567719036 +     0.018ms: Writing handshake part SessionId (5825) to pipe /tmp/MSBuild3867
+.NET TP Worker (TID 4) 639027610567719247 +    0.0211ms: Reading handshake from pipe /tmp/MSBuild3867
+.NET TP Worker (TID 4) 639027610567754453 +    3.5206ms: Handshake failed on part 7. Probably the client is a different MSBuild build.
+.NET TP Worker (TID 4) 639027610567754783 +     0.033ms: Failed to connect to pipe /tmp/MSBuild3867. Handshake failed on part 7. Probably the client is a different MSBuild build.
+.NET TP Worker (TID 4) 639027610567755234 +    0.0451ms: Trying to connect to existing process dotnet with id 3868 to establish node 2...
+.NET TP Worker (TID 4) 639027610567755516 +    0.0282ms: Attempting connect to PID 3868 with pipe /tmp/MSBuild3868 with timeout 0 ms
+.NET TP Worker (TID 4) 639027610567757391 +    0.1875ms: Writing handshake part Options (16777228) to pipe /tmp/MSBuild3868
+.NET TP Worker (TID 4) 639027610567757738 +    0.0347ms: Writing handshake part Salt (1312470924) to pipe /tmp/MSBuild3868
+.NET TP Worker (TID 4) 639027610567757992 +    0.0254ms: Writing handshake part FileVersionMajor (18) to pipe /tmp/MSBuild3868
+.NET TP Worker (TID 4) 639027610567758172 +     0.018ms: Writing handshake part FileVersionMinor (0) to pipe /tmp/MSBuild3868
+.NET TP Worker (TID 4) 639027610567758420 +    0.0248ms: Writing handshake part FileVersionBuild (6) to pipe /tmp/MSBuild3868
+.NET TP Worker (TID 4) 639027610567758588 +    0.0168ms: Writing handshake part FileVersionPrivate (57005) to pipe /tmp/MSBuild3868
+.NET TP Worker (TID 4) 639027610567758758 +     0.017ms: Writing handshake part SessionId (5825) to pipe /tmp/MSBuild3868
+.NET TP Worker (TID 4) 639027610567758953 +    0.0195ms: Reading handshake from pipe /tmp/MSBuild3868
+.NET TP Worker (TID 4) 639027610567779572 +    2.0619ms: Handshake failed on part 7. Probably the client is a different MSBuild build.
+.NET TP Worker (TID 4) 639027610567779988 +    0.0416ms: Failed to connect to pipe /tmp/MSBuild3868. Handshake failed on part 7. Probably the client is a different MSBuild build.
+.NET TP Worker (TID 4) 639027610567780507 +    0.0519ms: Trying to connect to existing process dotnet with id 4032 to establish node 2...
+.NET TP Worker (TID 4) 639027610567780817 +     0.031ms: Attempting connect to PID 4032 with pipe /tmp/MSBuild4032 with timeout 0 ms
+.NET TP Worker (TID 4) 639027610567781377 +     0.056ms: Writing handshake part Options (16777228) to pipe /tmp/MSBuild4032
+.NET TP Worker (TID 4) 639027610567781623 +    0.0246ms: Writing handshake part Salt (1312470924) to pipe /tmp/MSBuild4032
+.NET TP Worker (TID 4) 639027610567781821 +    0.0198ms: Writing handshake part FileVersionMajor (18) to pipe /tmp/MSBuild4032
+.NET TP Worker (TID 4) 639027610567782014 +    0.0193ms: Writing handshake part FileVersionMinor (0) to pipe /tmp/MSBuild4032
+.NET TP Worker (TID 4) 639027610567782208 +    0.0194ms: Writing handshake part FileVersionBuild (6) to pipe /tmp/MSBuild4032
+.NET TP Worker (TID 4) 639027610567782408 +      0.02ms: Writing handshake part FileVersionPrivate (57005) to pipe /tmp/MSBuild4032
+.NET TP Worker (TID 4) 639027610567782598 +     0.019ms: Writing handshake part SessionId (5825) to pipe /tmp/MSBuild4032
+.NET TP Worker (TID 4) 639027610567782801 +    0.0203ms: Reading handshake from pipe /tmp/MSBuild4032
+.NET TP Worker (TID 4) 639027610567793675 +    1.0874ms: Handshake failed on part 7. Probably the client is a different MSBuild build.
+.NET TP Worker (TID 4) 639027610567794047 +    0.0372ms: Failed to connect to pipe /tmp/MSBuild4032. Handshake failed on part 7. Probably the client is a different MSBuild build.
+.NET TP Worker (TID 4) 639027610567794414 +    0.0367ms: Trying to connect to existing process dotnet with id 4171 to establish node 2...
+.NET TP Worker (TID 4) 639027610567794681 +    0.0267ms: Attempting connect to PID 4171 with pipe /tmp/MSBuild4171 with timeout 0 ms
+.NET TP Worker (TID 4) 639027610567795438 +    0.0757ms: Writing handshake part Options (16777228) to pipe /tmp/MSBuild4171
+.NET TP Worker (TID 4) 639027610567795739 +    0.0301ms: Writing handshake part Salt (1312470924) to pipe /tmp/MSBuild4171
+.NET TP Worker (TID 4) 639027610567795950 +    0.0211ms: Writing handshake part FileVersionMajor (18) to pipe /tmp/MSBuild4171
+.NET TP Worker (TID 4) 639027610567796133 +    0.0183ms: Writing handshake part FileVersionMinor (0) to pipe /tmp/MSBuild4171
+.NET TP Worker (TID 4) 639027610567796328 +    0.0195ms: Writing handshake part FileVersionBuild (6) to pipe /tmp/MSBuild4171
+.NET TP Worker (TID 4) 639027610567796522 +    0.0194ms: Writing handshake part FileVersionPrivate (57005) to pipe /tmp/MSBuild4171
+.NET TP Worker (TID 4) 639027610567796716 +    0.0194ms: Writing handshake part SessionId (5825) to pipe /tmp/MSBuild4171
+.NET TP Worker (TID 4) 639027610567796925 +    0.0209ms: Reading handshake from pipe /tmp/MSBuild4171
+.NET TP Worker (TID 4) 639027610567807811 +    1.0886ms: Handshake failed on part 7. Probably the client is a different MSBuild build.
+.NET TP Worker (TID 4) 639027610567808141 +     0.033ms: Failed to connect to pipe /tmp/MSBuild4171. Handshake failed on part 7. Probably the client is a different MSBuild build.
+.NET TP Worker (TID 4) 639027610567808453 +    0.0312ms: Trying to connect to existing process dotnet with id 4174 to establish node 2...
+.NET TP Worker (TID 4) 639027610567808720 +    0.0267ms: Attempting connect to PID 4174 with pipe /tmp/MSBuild4174 with timeout 0 ms
+.NET TP Worker (TID 4) 639027610567809177 +    0.0457ms: Writing handshake part Options (16777228) to pipe /tmp/MSBuild4174
+.NET TP Worker (TID 4) 639027610567809379 +    0.0202ms: Writing handshake part Salt (1312470924) to pipe /tmp/MSBuild4174
+.NET TP Worker (TID 4) 639027610567809555 +    0.0176ms: Writing handshake part FileVersionMajor (18) to pipe /tmp/MSBuild4174
+.NET TP Worker (TID 4) 639027610567809745 +     0.019ms: Writing handshake part FileVersionMinor (0) to pipe /tmp/MSBuild4174
+.NET TP Worker (TID 4) 639027610567809924 +    0.0179ms: Writing handshake part FileVersionBuild (6) to pipe /tmp/MSBuild4174
+.NET TP Worker (TID 4) 639027610567810158 +    0.0234ms: Writing handshake part FileVersionPrivate (57005) to pipe /tmp/MSBuild4174
+.NET TP Worker (TID 4) 639027610567810282 +    0.0124ms: Writing handshake part SessionId (5825) to pipe /tmp/MSBuild4174
+.NET TP Worker (TID 4) 639027610567810461 +    0.0179ms: Reading handshake from pipe /tmp/MSBuild4174
+.NET TP Worker (TID 4) 639027610567819969 +    0.9508ms: Handshake failed on part 7. Probably the client is a different MSBuild build.
+.NET TP Worker (TID 4) 639027610567820226 +    0.0257ms: Failed to connect to pipe /tmp/MSBuild4174. Handshake failed on part 7. Probably the client is a different MSBuild build.
+.NET TP Worker (TID 4) 639027610567820470 +    0.0244ms: Trying to connect to existing process dotnet with id 4424 to establish node 2...
+.NET TP Worker (TID 4) 639027610567820650 +     0.018ms: Attempting connect to PID 4424 with pipe /tmp/MSBuild4424 with timeout 0 ms
+.NET TP Worker (TID 4) 639027610567821084 +    0.0434ms: Writing handshake part Options (16777228) to pipe /tmp/MSBuild4424
+.NET TP Worker (TID 4) 639027610567821298 +    0.0214ms: Writing handshake part Salt (1312470924) to pipe /tmp/MSBuild4424
+.NET TP Worker (TID 4) 639027610567821480 +    0.0182ms: Writing handshake part FileVersionMajor (18) to pipe /tmp/MSBuild4424
+.NET TP Worker (TID 4) 639027610567821665 +    0.0185ms: Writing handshake part FileVersionMinor (0) to pipe /tmp/MSBuild4424
+.NET TP Worker (TID 4) 639027610567821930 +    0.0265ms: Writing handshake part FileVersionBuild (6) to pipe /tmp/MSBuild4424
+.NET TP Worker (TID 4) 639027610567822044 +    0.0114ms: Writing handshake part FileVersionPrivate (57005) to pipe /tmp/MSBuild4424
+.NET TP Worker (TID 4) 639027610567822167 +    0.0123ms: Writing handshake part SessionId (5825) to pipe /tmp/MSBuild4424
+.NET TP Worker (TID 4) 639027610567822354 +    0.0187ms: Reading handshake from pipe /tmp/MSBuild4424
+.NET TP Worker (TID 4) 639027610567833308 +    1.0954ms: Handshake failed on part 7. Probably the client is a different MSBuild build.
+.NET TP Worker (TID 4) 639027610567833655 +    0.0347ms: Failed to connect to pipe /tmp/MSBuild4424. Handshake failed on part 7. Probably the client is a different MSBuild build.
+.NET TP Worker (TID 4) 639027610567833994 +    0.0339ms: Trying to connect to existing process dotnet with id 4427 to establish node 2...
+.NET TP Worker (TID 4) 639027610567834254 +     0.026ms: Attempting connect to PID 4427 with pipe /tmp/MSBuild4427 with timeout 0 ms
+.NET TP Worker (TID 4) 639027610567834765 +    0.0511ms: Writing handshake part Options (16777228) to pipe /tmp/MSBuild4427
+.NET TP Worker (TID 4) 639027610567835018 +    0.0253ms: Writing handshake part Salt (1312470924) to pipe /tmp/MSBuild4427
+.NET TP Worker (TID 4) 639027610567835459 +    0.0441ms: Writing handshake part FileVersionMajor (18) to pipe /tmp/MSBuild4427
+.NET TP Worker (TID 4) 639027610567835629 +     0.017ms: Writing handshake part FileVersionMinor (0) to pipe /tmp/MSBuild4427
+.NET TP Worker (TID 4) 639027610567835805 +    0.0176ms: Writing handshake part FileVersionBuild (6) to pipe /tmp/MSBuild4427
+.NET TP Worker (TID 4) 639027610567835990 +    0.0185ms: Writing handshake part FileVersionPrivate (57005) to pipe /tmp/MSBuild4427
+.NET TP Worker (TID 4) 639027610567836226 +    0.0236ms: Writing handshake part SessionId (5825) to pipe /tmp/MSBuild4427
+.NET TP Worker (TID 4) 639027610567836419 +    0.0193ms: Reading handshake from pipe /tmp/MSBuild4427
+.NET TP Worker (TID 4) 639027610567848384 +    1.1965ms: Handshake failed on part 7. Probably the client is a different MSBuild build.
+.NET TP Worker (TID 4) 639027610567848758 +    0.0374ms: Failed to connect to pipe /tmp/MSBuild4427. Handshake failed on part 7. Probably the client is a different MSBuild build.
+.NET TP Worker (TID 4) 639027610567849126 +    0.0368ms: Trying to connect to existing process dotnet with id 4654 to establish node 2...
+.NET TP Worker (TID 4) 639027610567849412 +    0.0286ms: Attempting connect to PID 4654 with pipe /tmp/MSBuild4654 with timeout 0 ms
+.NET TP Worker (TID 4) 639027610567849962 +     0.055ms: Writing handshake part Options (16777228) to pipe /tmp/MSBuild4654
+.NET TP Worker (TID 4) 639027610567850206 +    0.0244ms: Writing handshake part Salt (1312470924) to pipe /tmp/MSBuild4654
+.NET TP Worker (TID 4) 639027610567850407 +    0.0201ms: Writing handshake part FileVersionMajor (18) to pipe /tmp/MSBuild4654
+.NET TP Worker (TID 4) 639027610567850599 +    0.0192ms: Writing handshake part FileVersionMinor (0) to pipe /tmp/MSBuild4654
+.NET TP Worker (TID 4) 639027610567850785 +    0.0186ms: Writing handshake part FileVersionBuild (6) to pipe /tmp/MSBuild4654
+.NET TP Worker (TID 4) 639027610567850988 +    0.0203ms: Writing handshake part FileVersionPrivate (57005) to pipe /tmp/MSBuild4654
+.NET TP Worker (TID 4) 639027610567851178 +     0.019ms: Writing handshake part SessionId (5825) to pipe /tmp/MSBuild4654
+.NET TP Worker (TID 4) 639027610567851370 +    0.0192ms: Reading handshake from pipe /tmp/MSBuild4654
+.NET TP Worker (TID 4) 639027610567867981 +    1.6611ms: Handshake failed on part 7. Probably the client is a different MSBuild build.
+.NET TP Worker (TID 4) 639027610567868321 +     0.034ms: Failed to connect to pipe /tmp/MSBuild4654. Handshake failed on part 7. Probably the client is a different MSBuild build.
+.NET TP Worker (TID 4) 639027610567868629 +    0.0308ms: Trying to connect to existing process dotnet with id 4812 to establish node 2...
+.NET TP Worker (TID 4) 639027610567868886 +    0.0257ms: Attempting connect to PID 4812 with pipe /tmp/MSBuild4812 with timeout 0 ms
+.NET TP Worker (TID 4) 639027610567872776 +     0.389ms: Writing handshake part Options (16777228) to pipe /tmp/MSBuild4812
+.NET TP Worker (TID 4) 639027610567873131 +    0.0355ms: Writing handshake part Salt (1312470924) to pipe /tmp/MSBuild4812
+.NET TP Worker (TID 4) 639027610567873350 +    0.0219ms: Writing handshake part FileVersionMajor (18) to pipe /tmp/MSBuild4812
+.NET TP Worker (TID 4) 639027610567873553 +    0.0203ms: Writing handshake part FileVersionMinor (0) to pipe /tmp/MSBuild4812
+.NET TP Worker (TID 4) 639027610567873739 +    0.0186ms: Writing handshake part FileVersionBuild (6) to pipe /tmp/MSBuild4812
+.NET TP Worker (TID 4) 639027610567873919 +     0.018ms: Writing handshake part FileVersionPrivate (57005) to pipe /tmp/MSBuild4812
+.NET TP Worker (TID 4) 639027610567874109 +     0.019ms: Writing handshake part SessionId (5825) to pipe /tmp/MSBuild4812
+.NET TP Worker (TID 4) 639027610567874291 +    0.0182ms: Reading handshake from pipe /tmp/MSBuild4812
+.NET TP Worker (TID 4) 639027610567888373 +    1.4082ms: Handshake failed on part 7. Probably the client is a different MSBuild build.
+.NET TP Worker (TID 4) 639027610567888713 +     0.034ms: Failed to connect to pipe /tmp/MSBuild4812. Handshake failed on part 7. Probably the client is a different MSBuild build.
+.NET TP Worker (TID 4) 639027610567889026 +    0.0313ms: Trying to connect to existing process dotnet with id 5060 to establish node 2...
+.NET TP Worker (TID 4) 639027610567889286 +     0.026ms: Attempting connect to PID 5060 with pipe /tmp/MSBuild5060 with timeout 0 ms
+.NET TP Worker (TID 4) 639027610567889816 +     0.053ms: Writing handshake part Options (16777228) to pipe /tmp/MSBuild5060
+.NET TP Worker (TID 4) 639027610567890062 +    0.0246ms: Writing handshake part Salt (1312470924) to pipe /tmp/MSBuild5060
+.NET TP Worker (TID 4) 639027610567890331 +    0.0269ms: Writing handshake part FileVersionMajor (18) to pipe /tmp/MSBuild5060
+.NET TP Worker (TID 4) 639027610567890523 +    0.0192ms: Writing handshake part FileVersionMinor (0) to pipe /tmp/MSBuild5060
+.NET TP Worker (TID 4) 639027610567890705 +    0.0182ms: Writing handshake part FileVersionBuild (6) to pipe /tmp/MSBuild5060
+.NET TP Worker (TID 4) 639027610567890887 +    0.0182ms: Writing handshake part FileVersionPrivate (57005) to pipe /tmp/MSBuild5060
+.NET TP Worker (TID 4) 639027610567891072 +    0.0185ms: Writing handshake part SessionId (5825) to pipe /tmp/MSBuild5060
+.NET TP Worker (TID 4) 639027610567891265 +    0.0193ms: Reading handshake from pipe /tmp/MSBuild5060
+.NET TP Worker (TID 4) 639027610567941520 +    5.0255ms: Handshake failed on part 7. Probably the client is a different MSBuild build.
+.NET TP Worker (TID 4) 639027610567941860 +     0.034ms: Failed to connect to pipe /tmp/MSBuild5060. Handshake failed on part 7. Probably the client is a different MSBuild build.
+.NET TP Worker (TID 4) 639027610567942163 +    0.0303ms: Trying to connect to existing process dotnet with id 5061 to establish node 2...
+.NET TP Worker (TID 4) 639027610567942422 +    0.0259ms: Attempting connect to PID 5061 with pipe /tmp/MSBuild5061 with timeout 0 ms
+.NET TP Worker (TID 4) 639027610567942942 +     0.052ms: Writing handshake part Options (16777228) to pipe /tmp/MSBuild5061
+.NET TP Worker (TID 4) 639027610567943184 +    0.0242ms: Writing handshake part Salt (1312470924) to pipe /tmp/MSBuild5061
+.NET TP Worker (TID 4) 639027610567943377 +    0.0193ms: Writing handshake part FileVersionMajor (18) to pipe /tmp/MSBuild5061
+.NET TP Worker (TID 4) 639027610567943561 +    0.0184ms: Writing handshake part FileVersionMinor (0) to pipe /tmp/MSBuild5061
+.NET TP Worker (TID 4) 639027610567943746 +    0.0185ms: Writing handshake part FileVersionBuild (6) to pipe /tmp/MSBuild5061
+.NET TP Worker (TID 4) 639027610567943926 +     0.018ms: Writing handshake part FileVersionPrivate (57005) to pipe /tmp/MSBuild5061
+.NET TP Worker (TID 4) 639027610567944094 +    0.0168ms: Writing handshake part SessionId (5825) to pipe /tmp/MSBuild5061
+.NET TP Worker (TID 4) 639027610567944265 +    0.0171ms: Reading handshake from pipe /tmp/MSBuild5061
+.NET TP Worker (TID 4) 639027610567979098 +    3.4833ms: Handshake failed on part 7. Probably the client is a different MSBuild build.
+.NET TP Worker (TID 4) 639027610567979465 +    0.0367ms: Failed to connect to pipe /tmp/MSBuild5061. Handshake failed on part 7. Probably the client is a different MSBuild build.
+.NET TP Worker (TID 4) 639027610567979822 +    0.0357ms: Trying to connect to existing process dotnet with id 5350 to establish node 2...
+.NET TP Worker (TID 4) 639027610567980095 +    0.0273ms: Attempting connect to PID 5350 with pipe /tmp/MSBuild5350 with timeout 0 ms
+.NET TP Worker (TID 4) 639027610567980568 +    0.0473ms: Writing handshake part Options (16777228) to pipe /tmp/MSBuild5350
+.NET TP Worker (TID 4) 639027610567980812 +    0.0244ms: Writing handshake part Salt (1312470924) to pipe /tmp/MSBuild5350
+.NET TP Worker (TID 4) 639027610567980999 +    0.0187ms: Writing handshake part FileVersionMajor (18) to pipe /tmp/MSBuild5350
+.NET TP Worker (TID 4) 639027610567981189 +     0.019ms: Writing handshake part FileVersionMinor (0) to pipe /tmp/MSBuild5350
+.NET TP Worker (TID 4) 639027610567981379 +     0.019ms: Writing handshake part FileVersionBuild (6) to pipe /tmp/MSBuild5350
+.NET TP Worker (TID 4) 639027610567981564 +    0.0185ms: Writing handshake part FileVersionPrivate (57005) to pipe /tmp/MSBuild5350
+.NET TP Worker (TID 4) 639027610567981748 +    0.0184ms: Writing handshake part SessionId (5825) to pipe /tmp/MSBuild5350
+.NET TP Worker (TID 4) 639027610567981939 +    0.0191ms: Reading handshake from pipe /tmp/MSBuild5350
+.NET TP Worker (TID 4) 639027610568021538 +    3.9599ms: Handshake failed on part 7. Probably the client is a different MSBuild build.
+.NET TP Worker (TID 4) 639027610568021898 +     0.036ms: Failed to connect to pipe /tmp/MSBuild5350. Handshake failed on part 7. Probably the client is a different MSBuild build.
+.NET TP Worker (TID 4) 639027610568022167 +    0.0269ms: Trying to connect to existing process dotnet with id 5351 to establish node 2...
+.NET TP Worker (TID 4) 639027610568022362 +    0.0195ms: Attempting connect to PID 5351 with pipe /tmp/MSBuild5351 with timeout 0 ms
+.NET TP Worker (TID 4) 639027610568022834 +    0.0472ms: Writing handshake part Options (16777228) to pipe /tmp/MSBuild5351
+.NET TP Worker (TID 4) 639027610568023054 +     0.022ms: Writing handshake part Salt (1312470924) to pipe /tmp/MSBuild5351
+.NET TP Worker (TID 4) 639027610568023224 +     0.017ms: Writing handshake part FileVersionMajor (18) to pipe /tmp/MSBuild5351
+.NET TP Worker (TID 4) 639027610568023416 +    0.0192ms: Writing handshake part FileVersionMinor (0) to pipe /tmp/MSBuild5351
+.NET TP Worker (TID 4) 639027610568023606 +     0.019ms: Writing handshake part FileVersionBuild (6) to pipe /tmp/MSBuild5351
+.NET TP Worker (TID 4) 639027610568023795 +    0.0189ms: Writing handshake part FileVersionPrivate (57005) to pipe /tmp/MSBuild5351
+.NET TP Worker (TID 4) 639027610568023984 +    0.0189ms: Writing handshake part SessionId (5825) to pipe /tmp/MSBuild5351
+.NET TP Worker (TID 4) 639027610568024185 +    0.0201ms: Reading handshake from pipe /tmp/MSBuild5351
+.NET TP Worker (TID 4) 639027610568054073 +    2.9888ms: Handshake failed on part 7. Probably the client is a different MSBuild build.
+.NET TP Worker (TID 4) 639027610568054449 +    0.0376ms: Failed to connect to pipe /tmp/MSBuild5351. Handshake failed on part 7. Probably the client is a different MSBuild build.
+.NET TP Worker (TID 4) 639027610568054812 +    0.0363ms: Trying to connect to existing process dotnet with id 5655 to establish node 2...
+.NET TP Worker (TID 4) 639027610568055245 +    0.0433ms: Attempting connect to PID 5655 with pipe /tmp/MSBuild5655 with timeout 0 ms
+.NET TP Worker (TID 4) 639027610568055898 +    0.0653ms: Writing handshake part Options (16777228) to pipe /tmp/MSBuild5655
+.NET TP Worker (TID 4) 639027610568056148 +     0.025ms: Writing handshake part Salt (1312470924) to pipe /tmp/MSBuild5655
+.NET TP Worker (TID 4) 639027610568056331 +    0.0183ms: Writing handshake part FileVersionMajor (18) to pipe /tmp/MSBuild5655
+.NET TP Worker (TID 4) 639027610568056519 +    0.0188ms: Writing handshake part FileVersionMinor (0) to pipe /tmp/MSBuild5655
+.NET TP Worker (TID 4) 639027610568056697 +    0.0178ms: Writing handshake part FileVersionBuild (6) to pipe /tmp/MSBuild5655
+.NET TP Worker (TID 4) 639027610568056872 +    0.0175ms: Writing handshake part FileVersionPrivate (57005) to pipe /tmp/MSBuild5655
+.NET TP Worker (TID 4) 639027610568057050 +    0.0178ms: Writing handshake part SessionId (5825) to pipe /tmp/MSBuild5655
+.NET TP Worker (TID 4) 639027610568058094 +    0.1044ms: Reading handshake from pipe /tmp/MSBuild5655
+.NET TP Worker (TID 4) 639027610568082639 +    2.4545ms: Handshake failed on part 7. Probably the client is a different MSBuild build.
+.NET TP Worker (TID 4) 639027610568083025 +    0.0386ms: Failed to connect to pipe /tmp/MSBuild5655. Handshake failed on part 7. Probably the client is a different MSBuild build.
+.NET TP Worker (TID 4) 639027610568088207 +    0.5182ms: Trying to connect to existing process dotnet with id 5827 to establish node 2...
+.NET TP Worker (TID 4) 639027610568088972 +    0.0765ms: Could not connect to existing process, now creating a process...
+.NET TP Worker (TID 4) 639027610568096703 +    0.7731ms: Launching node from /usr/share/dotnet/sdk/10.0.101/MSBuild.dll
+.NET TP Worker (TID 4) 639027610568118802 +    2.2099ms: Successfully launched /usr/share/dotnet/dotnet node with PID 5896
+.NET TP Worker (TID 4) 639027610568119364 +    0.0562ms: Attempting connect to PID 5896 with pipe /tmp/MSBuild5896 with timeout 30000 ms
+.NET TP Worker (TID 4) 639027610569462352 +  134.2988ms: Writing handshake part Options (16777228) to pipe /tmp/MSBuild5896
+.NET TP Worker (TID 4) 639027610569463072 +     0.072ms: Writing handshake part Salt (1312470924) to pipe /tmp/MSBuild5896
+.NET TP Worker (TID 4) 639027610569463267 +    0.0195ms: Writing handshake part FileVersionMajor (18) to pipe /tmp/MSBuild5896
+.NET TP Worker (TID 4) 639027610569463436 +    0.0169ms: Writing handshake part FileVersionMinor (0) to pipe /tmp/MSBuild5896
+.NET TP Worker (TID 4) 639027610569463607 +    0.0171ms: Writing handshake part FileVersionBuild (6) to pipe /tmp/MSBuild5896
+.NET TP Worker (TID 4) 639027610569463782 +    0.0175ms: Writing handshake part FileVersionPrivate (57005) to pipe /tmp/MSBuild5896
+.NET TP Worker (TID 4) 639027610569463963 +    0.0181ms: Writing handshake part SessionId (5825) to pipe /tmp/MSBuild5896
+.NET TP Worker (TID 4) 639027610569464155 +    0.0192ms: Reading handshake from pipe /tmp/MSBuild5896
+.NET TP Worker (TID 4) 639027610569610587 +   14.6432ms: Successfully connected to pipe /tmp/MSBuild5896...!
+.NET TP Worker (TID 4) 639027610569698659 +    8.8072ms: Successfully connected to created node 2 which is PID 5896
