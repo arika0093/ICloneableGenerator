@@ -35,7 +35,7 @@ public class SimpleManualTest
         clone.Items.ShouldNotBeSameAs(original.Items);
         clone.Items[0].ShouldNotBeSameAs(original.Items[0]);
         clone.Items[0][0].ShouldNotBeSameAs(original.Items[0][0]);
-        
+
         // Verify modifying clone doesn't affect original
         clone.Items[0][0][0] = 999;
         original.Items[0][0][0].ShouldBe(1);
@@ -64,10 +64,10 @@ public class SimpleManualTest
         clone.ShouldNotBeSameAs(original);
         clone.Level2.ShouldNotBeSameAs(original.Level2);
         clone.Level2.Level3.ShouldNotBeSameAs(original.Level2.Level3);
-        
+
         // Verify values
         clone.Level2.Level3.Value.ShouldBe(300);
-        
+
         // Verify modifying clone doesn't affect original
         clone.Level2.Level3.Value = 999;
         original.Level2.Level3.Value.ShouldBe(300);
@@ -85,11 +85,9 @@ public class ManualTripleNestedList : IDeepCloneable<ManualTripleNestedList>
         return new ManualTripleNestedList
         {
             Name = this.Name,
-            Items = this.Items?.Select(level1 =>
-                level1.Select(level2 =>
-                    level2.ToList()
-                ).ToList()
-            ).ToList(),
+            Items = this
+                .Items?.Select(level1 => level1.Select(level2 => level2.ToList()).ToList())
+                .ToList(),
         };
     }
 }
@@ -135,10 +133,6 @@ public class ManualLevel3 : IDeepCloneable<ManualLevel3>
 
     public ManualLevel3 DeepClone()
     {
-        return new ManualLevel3
-        {
-            Name = this.Name,
-            Value = this.Value,
-        };
+        return new ManualLevel3 { Name = this.Name, Value = this.Value };
     }
 }
