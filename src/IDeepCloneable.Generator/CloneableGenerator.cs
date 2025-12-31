@@ -92,9 +92,18 @@ public class CloneableGenerator : IIncrementalGenerator
         string interfaceName
     )
     {
+        // Check if any interface is IDeepCloneable<T>
         return classSymbol.AllInterfaces.FirstOrDefault(i =>
-            i.OriginalDefinition.ToDisplayString().StartsWith(interfaceName)
-        );
+        {
+            if (i.OriginalDefinition.Name != "IDeepCloneable")
+                return false;
+            
+            var ns = i.OriginalDefinition.ContainingNamespace;
+            if (ns == null)
+                return false;
+                
+            return ns.ToDisplayString() == "IDeepCloneable";
+        });
     }
 
     private static bool HasMethodImplementation(INamedTypeSymbol classSymbol, string methodName)
@@ -133,8 +142,7 @@ public class CloneableGenerator : IIncrementalGenerator
             using System.Linq;
             using System.Collections.Immutable;
 
-            {{namespaceDecl}}
-            partial {classInfo.TypeKeyword} {classInfo.ClassName}
+            {{namespaceDecl}}partial {classInfo.TypeKeyword} {classInfo.ClassName}
             {
             {{deepCloneMethod}}
             }
