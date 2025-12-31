@@ -123,7 +123,7 @@ public class CloneableGenerator : IIncrementalGenerator
     private static string GenerateCloneMethod(ClassInfo classInfo)
     {
         var namespaceDecl = classInfo.Namespace is not null
-            ? $"namespace {classInfo.Namespace};"
+            ? $"namespace {classInfo.Namespace};\n"
             : "";
         var deepCloneMethod = classInfo.ShouldGenerateDeepClone
             ? GenerateDeepCloneMethod(classInfo)
@@ -134,7 +134,6 @@ public class CloneableGenerator : IIncrementalGenerator
             using System.Collections.Immutable;
 
             {{namespaceDecl}}
-
             partial {classInfo.TypeKeyword} {classInfo.ClassName}
             {
             {{deepCloneMethod}}
