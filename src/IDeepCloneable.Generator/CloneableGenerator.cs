@@ -131,22 +131,38 @@ public class CloneableGenerator : IIncrementalGenerator
 
     private static string GenerateCloneMethod(ClassInfo classInfo)
     {
-        var namespaceDecl = classInfo.Namespace is not null
-            ? $"namespace {classInfo.Namespace};\n"
-            : "";
         var deepCloneMethod = classInfo.ShouldGenerateDeepClone
             ? GenerateDeepCloneMethod(classInfo)
             : string.Empty;
 
-        return $$"""
-            using System.Linq;
-            using System.Collections.Immutable;
+        if (classInfo.Namespace is not null)
+        {
+            // Use block-scoped namespace to avoid .NET 10 issues with file-scoped namespaces
+            return $$"""
+                using System.Linq;
+                using System.Collections.Immutable;
 
-            {{namespaceDecl}}partial {classInfo.TypeKeyword} {classInfo.ClassName}
-            {
-            {{deepCloneMethod}}
-            }
-            """;
+                namespace {{classInfo.Namespace}}
+                {
+                    partial {{classInfo.TypeKeyword}} {{classInfo.ClassName}}
+                    {
+                    {{deepCloneMethod}}
+                    }
+                }
+                """;
+        }
+        else
+        {
+            return $$"""
+                using System.Linq;
+                using System.Collections.Immutable;
+
+                partial {{classInfo.TypeKeyword}} {{classInfo.ClassName}}
+                {
+                {{deepCloneMethod}}
+                }
+                """;
+        }
     }
 
     private static string GenerateDeepCloneMethod(ClassInfo classInfo)
