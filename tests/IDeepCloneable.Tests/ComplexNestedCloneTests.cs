@@ -241,8 +241,18 @@ public class ComplexNestedCloneTests
         var original = new ComplexWithSharedReferences
         {
             Name = "Root",
-            Reference1 = new Level2 { Name = "Ref1", Value = 10, Level3 = sharedLevel3 },
-            Reference2 = new Level2 { Name = "Ref2", Value = 20, Level3 = sharedLevel3 },
+            Reference1 = new Level2
+            {
+                Name = "Ref1",
+                Value = 10,
+                Level3 = sharedLevel3,
+            },
+            Reference2 = new Level2
+            {
+                Name = "Ref2",
+                Value = 20,
+                Level3 = sharedLevel3,
+            },
         };
 
         // Act: Clone the object
@@ -315,14 +325,14 @@ public partial class Level1 : IDeepCloneable<Level1>
     public Level2? Level2 { get; set; }
 }
 
-public partial class Level2 : IDeepCloneable<Level2>
+public partial class Level2
 {
     public string Name { get; set; } = string.Empty;
     public int Value { get; set; }
     public Level3? Level3 { get; set; }
 }
 
-public partial class Level3 : IDeepCloneable<Level3>
+public partial class Level3
 {
     public string Name { get; set; } = string.Empty;
     public int Value { get; set; }
@@ -335,13 +345,13 @@ public partial class ComplexStructure : IDeepCloneable<ComplexStructure>
     public List<ItemWithNestedData>? Items { get; set; }
 }
 
-public partial class ItemWithNestedData : IDeepCloneable<ItemWithNestedData>
+public partial class ItemWithNestedData
 {
     public string Id { get; set; } = string.Empty;
     public List<SubItem>? SubItems { get; set; }
 }
 
-public partial class SubItem : IDeepCloneable<SubItem>
+public partial class SubItem
 {
     public string Value { get; set; } = string.Empty;
     public int Data { get; set; }
@@ -367,14 +377,13 @@ public partial class ClassWithNestedDictionary : IDeepCloneable<ClassWithNestedD
     public Dictionary<string, DataContainer>? Data { get; set; }
 }
 
-public partial class DataContainer : IDeepCloneable<DataContainer>
+public partial class DataContainer
 {
     public List<SimpleCloneableItem>? Items { get; set; }
 }
 
 // Test classes for shared references
-public partial class ComplexWithSharedReferences
-    : IDeepCloneable<ComplexWithSharedReferences>
+public partial class ComplexWithSharedReferences : IDeepCloneable<ComplexWithSharedReferences>
 {
     public string Name { get; set; } = string.Empty;
     public Level2? Reference1 { get; set; }
