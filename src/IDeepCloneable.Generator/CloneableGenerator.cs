@@ -424,6 +424,26 @@ public class CloneableGenerator : IIncrementalGenerator
             return $"{sourceObjectName}.{propertyName}?.Select(x => x?.{DeepCloneMethodName}()).ToList()";
         }
         
+        // Check if element type is a reference type with properties that need deep cloning
+        if (elementType is INamedTypeSymbol namedElementTypeRef && 
+            !namedElementTypeRef.IsValueType && 
+            namedElementTypeRef.SpecialType != SpecialType.System_String)
+        {
+            var properties = GetCloneableProperties(namedElementTypeRef);
+            if (properties.Count > 0)
+            {
+                // Generate object initializer for deep cloning each element
+                var propertyAssignments = new List<string>();
+                foreach (var prop in properties)
+                {
+                    var propCloneExpr = GeneratePropertyCloneExpressionForObject(prop, "x");
+                    propertyAssignments.Add($"{prop.Name} = {propCloneExpr}!");
+                }
+                var assignmentsStr = string.Join(", ", propertyAssignments);
+                return $"{sourceObjectName}.{propertyName}?.Select(x => x != null ? new {namedElementTypeRef.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat)} {{ {assignmentsStr} }} : null).ToList()";
+            }
+        }
+        
         return $"{sourceObjectName}.{propertyName} != null ? new System.Collections.Generic.List<{elementType.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat)}>({sourceObjectName}.{propertyName}) : null";
     }
     
@@ -441,6 +461,26 @@ public class CloneableGenerator : IIncrementalGenerator
         if (valueIsCloneable)
         {
             return $"{sourceObjectName}.{propertyName}?.ToDictionary(kvp => kvp.Key, kvp => kvp.Value?.{DeepCloneMethodName}())";
+        }
+
+        // Check if value type is a reference type with properties that need deep cloning
+        if (valueType is INamedTypeSymbol valueNamedTypeRef && 
+            !valueNamedTypeRef.IsValueType && 
+            valueNamedTypeRef.SpecialType != SpecialType.System_String)
+        {
+            var properties = GetCloneableProperties(valueNamedTypeRef);
+            if (properties.Count > 0)
+            {
+                // Generate object initializer for deep cloning each value
+                var propertyAssignments = new List<string>();
+                foreach (var prop in properties)
+                {
+                    var propCloneExpr = GeneratePropertyCloneExpressionForObject(prop, "kvp.Value");
+                    propertyAssignments.Add($"{prop.Name} = {propCloneExpr}!");
+                }
+                var assignmentsStr = string.Join(", ", propertyAssignments);
+                return $"{sourceObjectName}.{propertyName}?.ToDictionary(kvp => kvp.Key, kvp => kvp.Value != null ? new {valueNamedTypeRef.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat)} {{ {assignmentsStr} }} : null)";
+            }
         }
 
         return $"{sourceObjectName}.{propertyName} != null ? new System.Collections.Generic.Dictionary<{keyType.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat)}, {valueType.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat)}>({sourceObjectName}.{propertyName}) : null";
@@ -522,11 +562,37 @@ public class CloneableGenerator : IIncrementalGenerator
 
         var typeName = dictionaryType.OriginalDefinition.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat);
 
+        // Check if value type is a reference type with properties that need deep cloning
+        bool valueNeedsDeepClone = false;
+        string valueCloneExpression = "";
+        if (!valueIsCloneable && valueType is INamedTypeSymbol valueNamedTypeRef && 
+            !valueNamedTypeRef.IsValueType && 
+            valueNamedTypeRef.SpecialType != SpecialType.System_String)
+        {
+            var properties = GetCloneableProperties(valueNamedTypeRef);
+            if (properties.Count > 0)
+            {
+                valueNeedsDeepClone = true;
+                var propertyAssignments = new List<string>();
+                foreach (var prop in properties)
+                {
+                    var propCloneExpr = GeneratePropertyCloneExpressionForObject(prop, "kvp.Value");
+                    propertyAssignments.Add($"{prop.Name} = {propCloneExpr}!");
+                }
+                var assignmentsStr = string.Join(", ", propertyAssignments);
+                valueCloneExpression = $"kvp.Value != null ? new {valueNamedTypeRef.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat)} {{ {assignmentsStr} }} : null";
+            }
+        }
+
         if (typeName.StartsWith("global::System.Collections.Immutable.ImmutableDictionary<"))
         {
             if (valueIsCloneable)
             {
                 return $"this.{propertyName}?.ToImmutableDictionary(kvp => kvp.Key, kvp => kvp.Value?.{DeepCloneMethodName}())";
+            }
+            if (valueNeedsDeepClone)
+            {
+                return $"this.{propertyName}?.ToImmutableDictionary(kvp => kvp.Key, kvp => {valueCloneExpression})";
             }
             return $"this.{propertyName}";
         }
@@ -537,12 +603,21 @@ public class CloneableGenerator : IIncrementalGenerator
             {
                 return $"this.{propertyName} != null ? new System.Collections.ObjectModel.ReadOnlyDictionary<{keyType.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat)}, {valueType.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat)}>(this.{propertyName}.ToDictionary(kvp => kvp.Key, kvp => kvp.Value?.{DeepCloneMethodName}())) : null";
             }
+            if (valueNeedsDeepClone)
+            {
+                return $"this.{propertyName} != null ? new System.Collections.ObjectModel.ReadOnlyDictionary<{keyType.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat)}, {valueType.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat)}>(this.{propertyName}.ToDictionary(kvp => kvp.Key, kvp => {valueCloneExpression})) : null";
+            }
             return $"this.{propertyName} != null ? new System.Collections.ObjectModel.ReadOnlyDictionary<{keyType.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat)}, {valueType.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat)}>(new System.Collections.Generic.Dictionary<{keyType.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat)}, {valueType.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat)}>(this.{propertyName})) : null";
         }
 
         if (valueIsCloneable)
         {
             return $"this.{propertyName}?.ToDictionary(kvp => kvp.Key, kvp => kvp.Value?.{DeepCloneMethodName}())";
+        }
+
+        if (valueNeedsDeepClone)
+        {
+            return $"this.{propertyName}?.ToDictionary(kvp => kvp.Key, kvp => {valueCloneExpression})";
         }
 
         return $"this.{propertyName} != null ? new System.Collections.Generic.Dictionary<{keyType.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat)}, {valueType.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat)}>(this.{propertyName}) : null";
@@ -767,6 +842,26 @@ public class CloneableGenerator : IIncrementalGenerator
             return $"this.{propertyName}?.Select(x => {elementCloneExpr}).ToList()";
         }
         
+        // Check if element type is a reference type with properties that need deep cloning
+        if (elementType is INamedTypeSymbol namedElementTypeRef && 
+            !namedElementTypeRef.IsValueType && 
+            namedElementTypeRef.SpecialType != SpecialType.System_String)
+        {
+            var properties = GetCloneableProperties(namedElementTypeRef);
+            if (properties.Count > 0)
+            {
+                // Generate object initializer for deep cloning each element
+                var propertyAssignments = new List<string>();
+                foreach (var prop in properties)
+                {
+                    var propCloneExpr = GeneratePropertyCloneExpressionForObject(prop, "x");
+                    propertyAssignments.Add($"{prop.Name} = {propCloneExpr}!");
+                }
+                var assignmentsStr = string.Join(", ", propertyAssignments);
+                return $"this.{propertyName}?.Select(x => x != null ? new {namedElementTypeRef.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat)} {{ {assignmentsStr} }} : null).ToList()";
+            }
+        }
+        
         return $"this.{propertyName} != null ? new System.Collections.Generic.List<{elementType.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat)}>(this.{propertyName}) : null";
     }
     
@@ -792,6 +887,26 @@ public class CloneableGenerator : IIncrementalGenerator
         {
             var nestedCloneExpr = GenerateNestedCollectionCloneExpression(nestedCollectionType, "item");
             return $"{varName}?.Select(item => {nestedCloneExpr}).ToList()";
+        }
+        
+        // Check if element is a reference type with properties that need deep cloning
+        if (elementType is INamedTypeSymbol namedElementType && 
+            !namedElementType.IsValueType && 
+            namedElementType.SpecialType != SpecialType.System_String)
+        {
+            var properties = GetCloneableProperties(namedElementType);
+            if (properties.Count > 0)
+            {
+                // Generate object initializer for deep cloning each element
+                var propertyAssignments = new List<string>();
+                foreach (var prop in properties)
+                {
+                    var propCloneExpr = GeneratePropertyCloneExpressionForObject(prop, "item");
+                    propertyAssignments.Add($"{prop.Name} = {propCloneExpr}!");
+                }
+                var assignmentsStr = string.Join(", ", propertyAssignments);
+                return $"{varName}?.Select(item => item != null ? new {namedElementType.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat)} {{ {assignmentsStr} }} : null).ToList()";
+            }
         }
         
         // For value types, strings, and reference types, create a new list with copied elements
