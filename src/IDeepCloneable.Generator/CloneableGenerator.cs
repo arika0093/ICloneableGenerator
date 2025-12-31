@@ -92,18 +92,10 @@ public class CloneableGenerator : IIncrementalGenerator
         string interfaceName
     )
     {
-        // Check if any interface is IDeepCloneable<T>
+        // Check if any interface is IDeepCloneable.IDeepCloneable<T>
         return classSymbol.AllInterfaces.FirstOrDefault(i =>
-        {
-            if (i.OriginalDefinition.Name != "IDeepCloneable")
-                return false;
-
-            var ns = i.OriginalDefinition.ContainingNamespace;
-            if (ns == null)
-                return false;
-
-            return ns.ToDisplayString() == "IDeepCloneable";
-        });
+            i.OriginalDefinition.ToDisplayString().StartsWith("IDeepCloneable.IDeepCloneable<")
+        );
     }
 
     private static bool HasMethodImplementation(INamedTypeSymbol classSymbol, string methodName)
@@ -589,7 +581,55 @@ public class CloneableGenerator : IIncrementalGenerator
         {
             return $"this.{propertyName}?.Select(x => x?.{DeepCloneMethodName}()).ToList()";
         }
+        
+        // Check if element type is a collection that needs deep cloning
+        if (elementType is INamedTypeSymbol namedElementType && IsCollectionType(namedElementType))
+        {
+            // For nested collections (e.g., List<List<int>>), we need to deep clone each element
+            var elementCloneExpr = GenerateNestedCollectionCloneExpression(namedElementType, "x");
+            return $"this.{propertyName}?.Select(x => {elementCloneExpr}).ToList()";
+        }
+        
         return $"this.{propertyName} != null ? new System.Collections.Generic.List<{elementType.ToDisplayString()}>(this.{propertyName}) : null";
+    }
+    
+    private static string GenerateNestedCollectionCloneExpression(INamedTypeSymbol collectionType, string varName)
+    {
+        if (collectionType.TypeArguments.Length == 0)
+            return varName;
+        
+        var elementType = collectionType.TypeArguments[0];
+        
+        // Check if element is cloneable
+        bool isCloneable = false;
+        if (elementType is INamedTypeSymbol elementNamedType)
+        {
+            var deepCloneableInterface = elementNamedType.AllInterfaces.FirstOrDefault(i =>
+                i.OriginalDefinition.ToDisplayString().StartsWith("IDeepCloneable.IDeepCloneable<")
+            );
+            isCloneable = deepCloneableInterface is not null;
+        }
+        
+        if (isCloneable)
+        {
+            return $"{varName}?.Select(item => item?.{DeepCloneMethodName}()).ToList()";
+        }
+        
+        // Check if element is itself a collection
+        if (elementType is INamedTypeSymbol nestedCollectionType && IsCollectionType(nestedCollectionType))
+        {
+            var nestedCloneExpr = GenerateNestedCollectionCloneExpression(nestedCollectionType, "item");
+            return $"{varName}?.Select(item => {nestedCloneExpr}).ToList()";
+        }
+        
+        // For value types and strings, just copy
+        if (elementType.IsValueType || elementType.SpecialType == SpecialType.System_String)
+        {
+            return $"{varName} != null ? new System.Collections.Generic.List<{elementType.ToDisplayString()}>({varName}) : null";
+        }
+        
+        // Default: create new list
+        return $"{varName} != null ? new System.Collections.Generic.List<{elementType.ToDisplayString()}>({varName}) : null";
     }
 
     private static List<IPropertySymbol> GetCloneableProperties(INamedTypeSymbol classSymbol)
