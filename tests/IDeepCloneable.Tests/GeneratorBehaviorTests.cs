@@ -66,11 +66,7 @@ public partial class ManualImplementationClass : IDeepCloneable<ManualImplementa
 
     public ManualImplementationClass DeepClone()
     {
-        return new ManualImplementationClass
-        {
-            Name = this.Name,
-            CustomValue = 100,
-        };
+        return new ManualImplementationClass { Name = this.Name, CustomValue = 100 };
     }
 }
 
