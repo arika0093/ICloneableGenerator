@@ -23,7 +23,7 @@ public partial class PersonCloneHelper;
 This approach is not bad, but the automatically generated code cannot be accessed **from the library side**.
 In other words, if the library wants to call the `Clone` method, it has to choose one of the following approaches:
 
-### 1. Implement a generic `Clone` process using reflection.
+### 1. Implement a generic `Clone` using reflection
 For example:
 
 ```csharp
@@ -40,7 +40,7 @@ public static T DeepClone<T>(T obj)
 
 This approach uses reflection, which results in poor performance. Also, NativeAOT cannot be used.
 
-### 2. Have the user implement some `ICloneable` interface and specify it as a type constraint on the library side.
+### 2. Have the user implement some `ICloneable` interface
 For example:
 
 ```csharp
@@ -68,7 +68,7 @@ public partial class Person : ICloneable<Person>
 
 This method allows free implementation and use of any library, but it is obviously tedious.
 
-### 3. Have the user specify a method for cloning.
+### 3. Have the user specify a method for cloning
 For example:
 
 ```csharp
@@ -95,7 +95,7 @@ var config = new MethodConfig()
 This method also allows free implementation, but again, manual implementation is required.
 
 ## Solution
-Add "IDeepCloneable" as a dependency on the library side.
+Add "IDeepCloneable" as a dependency on the **library side**.
 
 ### Library Authors
 On the library side, define abstract classes or interfaces that implement `IDeepCloneable<T>`.
