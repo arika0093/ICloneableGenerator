@@ -1,12 +1,13 @@
 # IDeepCloneable
 
-Automatic implementation of the `IDeepCloneable<T>` interface via source generators.
+Automatic implementation of the `IDeepCloneable<T>` interface via source generators. For library authors.
 
 ## Overview
 Provides automatic generation of the `DeepClone()` method for types implementing `IDeepCloneable<T>`.
 This works not only for `IDeepCloneable<T>` itself, but also for interfaces and abstract classes that inherit from it.
 
-## Problem Statement
+## Why this library?
+### Problem
 There are many libraries that implement DeepCopy. Why is this library necessary?
 
 Traditional libraries implement copy methods by adding some kind of attribute to specific types.
@@ -23,7 +24,7 @@ public partial class PersonCloneHelper;
 This approach is not bad, but the automatically generated code cannot be accessed **from the library side**.
 In other words, if the library wants to call the `Clone` method, it has to choose one of the following approaches:
 
-### 1. Implement a generic `Clone` using reflection
+#### 1. Implement a generic `Clone` using reflection
 For example:
 
 ```csharp
@@ -40,7 +41,7 @@ public static T DeepClone<T>(T obj)
 
 This approach uses reflection, which results in poor performance. Also, NativeAOT cannot be used.
 
-### 2. Have the user implement some `ICloneable` interface
+#### 2. Have the user implement some `ICloneable` interface
 For example:
 
 ```csharp
@@ -68,7 +69,7 @@ public partial class Person : ICloneable<Person>
 
 This method allows free implementation and use of any library, but it is obviously tedious.
 
-### 3. Have the user specify a method for cloning
+#### 3. Have the user specify a method for cloning
 For example:
 
 ```csharp
@@ -94,17 +95,18 @@ var config = new MethodConfig()
 
 This method also allows free implementation, but again, manual implementation is required.
 
-## Solution
+### Solution
 Add "IDeepCloneable" as a dependency on the **library side**.
 
-### Library Authors
+#### Library Authors
 On the library side, define abstract classes or interfaces that implement `IDeepCloneable<T>`.
 Then, check for `IDeepCloneable<T>` and call the `DeepClone()` method.
 
 ```csharp
 using IDeepCloneable;
 
-public interface ILibraryModel : IDeepCloneable<ILibraryModel>
+// Optionally: If you want to define your own interface or abstract class on the library side
+public interface ILibraryModel<T> : IDeepCloneable<T>
 {
   // Define properties and methods required by the library
 }
@@ -129,7 +131,7 @@ public class LibraryConfiguration<T>
 }
 ```
 
-### Users of the Library
+#### Users of the Library
 Library users simply inherit the abstract class or interface defined above and add the `partial` keyword.
 
 ```csharp
