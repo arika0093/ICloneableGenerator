@@ -1,6 +1,7 @@
 using System.Linq;
+using IDeepCloneable;
 
-namespace ICloneableGenerator.Tests;
+namespace IDeepCloneable.Tests;
 
 /// <summary>
 /// Tests for array cloning functionality.
@@ -10,13 +11,10 @@ public class ArrayCloneTests
     [Fact]
     public void DeepClone_IntArray_ClonesArray()
     {
-        // Arrange
         var original = new ClassWithIntArray { Name = "Test", Numbers = new[] { 1, 2, 3, 4, 5 } };
 
-        // Act
         var clone = original.DeepClone();
 
-        // Assert
         clone.ShouldNotBeSameAs(original);
         clone.Numbers.ShouldNotBeNull();
         clone.Numbers.ShouldNotBeSameAs(original.Numbers);
@@ -26,17 +24,14 @@ public class ArrayCloneTests
     [Fact]
     public void DeepClone_StringArray_ClonesArray()
     {
-        // Arrange
         var original = new ClassWithStringArray
         {
             Name = "Test",
             Items = new[] { "one", "two", "three" },
         };
 
-        // Act
         var clone = original.DeepClone();
 
-        // Assert
         clone.ShouldNotBeSameAs(original);
         clone.Items.ShouldNotBeNull();
         clone.Items.ShouldNotBeSameAs(original.Items);
@@ -46,7 +41,6 @@ public class ArrayCloneTests
     [Fact]
     public void DeepClone_ArrayOfCloneables_CreatesDeepCopy()
     {
-        // Arrange
         var original = new ClassWithCloneableArray
         {
             Name = "Parent",
@@ -57,16 +51,13 @@ public class ArrayCloneTests
             },
         };
 
-        // Act
         var clone = original.DeepClone();
 
-        // Assert
         clone.ShouldNotBeSameAs(original);
         clone.Items.ShouldNotBeNull();
         clone.Items.ShouldNotBeSameAs(original.Items);
         clone.Items.Length.ShouldBe(2);
 
-        // Each item should be a separate instance
         clone.Items[0].ShouldNotBeNull();
         clone.Items[0].ShouldNotBeSameAs(original.Items[0]);
         clone.Items[0]?.Name.ShouldBe("Item1");
@@ -78,7 +69,6 @@ public class ArrayCloneTests
     [Fact]
     public void DeepClone_ArrayModification_DoesNotAffectOriginal()
     {
-        // Arrange
         var original = new ClassWithCloneableArray
         {
             Name = "Parent",
@@ -88,7 +78,6 @@ public class ArrayCloneTests
             },
         };
 
-        // Act
         var clone = original.DeepClone();
         clone.Items.ShouldNotBeNull();
         if (clone.Items[0] != null)
@@ -96,20 +85,16 @@ public class ArrayCloneTests
             clone.Items[0].Name = "Modified";
         }
 
-        // Assert
         original.Items[0].Name.ShouldBe("Original");
     }
 
     [Fact]
     public void DeepClone_NullArray_HandlesCorrectly()
     {
-        // Arrange
         var original = new ClassWithIntArray { Name = "Test", Numbers = null };
 
-        // Act
         var clone = original.DeepClone();
 
-        // Assert
         clone.ShouldNotBeSameAs(original);
         clone.Numbers.ShouldBeNull();
     }
@@ -117,13 +102,10 @@ public class ArrayCloneTests
     [Fact]
     public void DeepClone_EmptyArray_HandlesCorrectly()
     {
-        // Arrange
         var original = new ClassWithIntArray { Name = "Test", Numbers = System.Array.Empty<int>() };
 
-        // Act
         var clone = original.DeepClone();
 
-        // Assert
         clone.ShouldNotBeSameAs(original);
         clone.Numbers.ShouldNotBeNull();
         clone.Numbers.Length.ShouldBe(0);
@@ -132,7 +114,6 @@ public class ArrayCloneTests
     [Fact]
     public void DeepClone_MultiDimensionalArray_ClonesArray()
     {
-        // Arrange
         var original = new ClassWithMultiDimensionalArray
         {
             Name = "Test",
@@ -143,10 +124,8 @@ public class ArrayCloneTests
             },
         };
 
-        // Act
         var clone = original.DeepClone();
 
-        // Assert
         clone.ShouldNotBeSameAs(original);
         clone.Matrix.ShouldNotBeNull();
         clone.Matrix.ShouldNotBeSameAs(original.Matrix);
@@ -157,27 +136,26 @@ public class ArrayCloneTests
     }
 }
 
-// Test classes
 public partial class ClassWithIntArray : IDeepCloneable<ClassWithIntArray>
 {
-    public string Name { get; set; } = "";
+    public string Name { get; set; } = string.Empty;
     public int[]? Numbers { get; set; }
 }
 
 public partial class ClassWithStringArray : IDeepCloneable<ClassWithStringArray>
 {
-    public string Name { get; set; } = "";
+    public string Name { get; set; } = string.Empty;
     public string[]? Items { get; set; }
 }
 
 public partial class ClassWithCloneableArray : IDeepCloneable<ClassWithCloneableArray>
 {
-    public string Name { get; set; } = "";
+    public string Name { get; set; } = string.Empty;
     public SimpleClass?[]? Items { get; set; }
 }
 
 public partial class ClassWithMultiDimensionalArray : IDeepCloneable<ClassWithMultiDimensionalArray>
 {
-    public string Name { get; set; } = "";
+    public string Name { get; set; } = string.Empty;
     public int[,]? Matrix { get; set; }
 }

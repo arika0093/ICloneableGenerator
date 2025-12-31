@@ -6,11 +6,11 @@
   </Configurations>
   <Folder Name="/src/">
     <File Path="src/Directory.Build.props" />
-    <Project Path="src/ICloneableGenerator.Generator/ICloneableGenerator.Generator.csproj" />
-    <Project Path="src/ICloneableGenerator/ICloneableGenerator.csproj" />
+    <Project Path="src/IDeepCloneable.Generator/IDeepCloneable.Generator.csproj" />
+    <Project Path="src/IDeepCloneable/IDeepCloneable.csproj" />
   </Folder>
   <Folder Name="/tests/">
     <File Path="tests/Directory.Build.props" />
-    <Project Path="tests/ICloneableGenerator.Tests/ICloneableGenerator.Tests.csproj" />
+    <Project Path="tests/IDeepCloneable.Tests/IDeepCloneable.Tests.csproj" />
   </Folder>
 </Solution>

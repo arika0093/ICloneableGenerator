@@ -1,7 +1,8 @@
 using System.Collections.Generic;
 using System.Linq;
+using IDeepCloneable;
 
-namespace ICloneableGenerator.Tests;
+namespace IDeepCloneable.Tests;
 
 /// <summary>
 /// Tests for Dictionary cloning functionality.
@@ -11,7 +12,6 @@ public class DictionaryCloneTests
     [Fact]
     public void DeepClone_DictionaryOfValueTypes_CreatesNewDictionary()
     {
-        // Arrange
         var original = new ClassWithValueDictionary
         {
             Name = "Test",
@@ -23,10 +23,8 @@ public class DictionaryCloneTests
             },
         };
 
-        // Act
         var clone = original.DeepClone();
 
-        // Assert
         clone.ShouldNotBeSameAs(original);
         clone.Scores.ShouldNotBeNull();
         clone.Scores.ShouldNotBeSameAs(original.Scores);
@@ -39,7 +37,6 @@ public class DictionaryCloneTests
     [Fact]
     public void DeepClone_DictionaryOfCloneables_CreatesDeepCopy()
     {
-        // Arrange
         var original = new ClassWithCloneableDictionary
         {
             Name = "Test",
@@ -56,16 +53,13 @@ public class DictionaryCloneTests
             },
         };
 
-        // Act
         var clone = original.DeepClone();
 
-        // Assert
         clone.ShouldNotBeSameAs(original);
         clone.Items.ShouldNotBeNull();
         clone.Items.ShouldNotBeSameAs(original.Items);
         clone.Items.Count.ShouldBe(2);
 
-        // Each value should be a separate instance
         clone.Items["first"].ShouldNotBeNull();
         clone.Items["first"].ShouldNotBeSameAs(original.Items["first"]);
         clone.Items["first"].Name.ShouldBe("Item1");
@@ -77,7 +71,6 @@ public class DictionaryCloneTests
     [Fact]
     public void DeepClone_DictionaryModification_DoesNotAffectOriginal()
     {
-        // Arrange
         var original = new ClassWithCloneableDictionary
         {
             Name = "Test",
@@ -90,25 +83,20 @@ public class DictionaryCloneTests
             },
         };
 
-        // Act
         var clone = original.DeepClone();
         clone.Items.ShouldNotBeNull();
         clone.Items["key"].Name = "Modified";
 
-        // Assert
         original.Items["key"].Name.ShouldBe("Original");
     }
 
     [Fact]
     public void DeepClone_NullDictionary_HandlesCorrectly()
     {
-        // Arrange
         var original = new ClassWithValueDictionary { Name = "Test", Scores = null };
 
-        // Act
         var clone = original.DeepClone();
 
-        // Assert
         clone.ShouldNotBeSameAs(original);
         clone.Scores.ShouldBeNull();
     }
@@ -116,17 +104,14 @@ public class DictionaryCloneTests
     [Fact]
     public void DeepClone_EmptyDictionary_HandlesCorrectly()
     {
-        // Arrange
         var original = new ClassWithValueDictionary
         {
             Name = "Test",
             Scores = new Dictionary<string, int>(),
         };
 
-        // Act
         var clone = original.DeepClone();
 
-        // Assert
         clone.ShouldNotBeSameAs(original);
         clone.Scores.ShouldNotBeNull();
         clone.Scores.Count.ShouldBe(0);
@@ -135,14 +120,11 @@ public class DictionaryCloneTests
     [Fact]
     public void DeepClone_DictionaryWithNullValues_HandlesCorrectly()
     {
-        // Arrange
         var original = new ClassWithCloneableDictionary
         {
             Name = "Test",
             Items = new Dictionary<string, SimpleClass>
             {
-                // Using null-forgiving operator here to test null handling in dictionaries
-                // This is safe because we're explicitly testing the null case
                 { "null-key", null! },
                 {
                     "valid-key",
@@ -151,10 +133,8 @@ public class DictionaryCloneTests
             },
         };
 
-        // Act
         var clone = original.DeepClone();
 
-        // Assert
         clone.ShouldNotBeSameAs(original);
         clone.Items.ShouldNotBeNull();
         clone.Items.Count.ShouldBe(2);
@@ -164,15 +144,14 @@ public class DictionaryCloneTests
     }
 }
 
-// Test classes
 public partial class ClassWithValueDictionary : IDeepCloneable<ClassWithValueDictionary>
 {
-    public string Name { get; set; } = "";
+    public string Name { get; set; } = string.Empty;
     public Dictionary<string, int>? Scores { get; set; }
 }
 
 public partial class ClassWithCloneableDictionary : IDeepCloneable<ClassWithCloneableDictionary>
 {
-    public string Name { get; set; } = "";
+    public string Name { get; set; } = string.Empty;
     public Dictionary<string, SimpleClass>? Items { get; set; }
 }

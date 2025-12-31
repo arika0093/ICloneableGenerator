@@ -5,9 +5,9 @@
     <LangVersion>latest</LangVersion>
     <Nullable>enable</Nullable>
     <RestorePackagesWithLockFile>true</RestorePackagesWithLockFile>
-    <PackageDescription>Automatic implementation generator for IDeepCloneable and IShallowCloneable interfaces via source generators.</PackageDescription>
-    <PackageProjectUrl>https://github.com/arika0093/ICloneableGenerator</PackageProjectUrl>
-    <RepositoryUrl>https://github.com/arika0093/ICloneableGenerator</RepositoryUrl>
+    <PackageDescription>Automatic implementation generator for the IDeepCloneable interface via source generators.</PackageDescription>
+    <PackageProjectUrl>https://github.com/arika0093/IDeepCloneable</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/arika0093/IDeepCloneable</RepositoryUrl>
     <PackageLicenseExpression>Apache-2.0</PackageLicenseExpression>
     <Authors>arika0093</Authors>
     <PackageReadmeFile>README.nuget.md</PackageReadmeFile>

@@ -1,4 +1,6 @@
-namespace ICloneableGenerator.Tests;
+using IDeepCloneable;
+
+namespace IDeepCloneable.Tests;
 
 /// <summary>
 /// Tests for record types with DeepClone functionality.
@@ -8,13 +10,10 @@ public class RecordCloneTests
     [Fact]
     public void DeepClone_SimpleRecord_ClonesCorrectly()
     {
-        // Arrange
         var original = new SimpleRecord("Alice", 30);
 
-        // Act
         var clone = original.DeepClone();
 
-        // Assert
         clone.ShouldNotBeNull();
         clone.ShouldNotBeSameAs(original);
         clone.Name.ShouldBe("Alice");
@@ -24,7 +23,6 @@ public class RecordCloneTests
     [Fact]
     public void DeepClone_RecordWithProperties_ClonesCorrectly()
     {
-        // Arrange
         var original = new PersonRecord
         {
             FirstName = "John",
@@ -32,10 +30,8 @@ public class RecordCloneTests
             Age = 25,
         };
 
-        // Act
         var clone = original.DeepClone();
 
-        // Assert
         clone.ShouldNotBeNull();
         clone.ShouldNotBeSameAs(original);
         clone.FirstName.ShouldBe("John");
@@ -46,7 +42,6 @@ public class RecordCloneTests
     [Fact]
     public void DeepClone_RecordWithNestedRecord_CreatesDeepCopy()
     {
-        // Arrange
         var original = new PersonWithAddressRecord
         {
             Name = "Jane",
@@ -58,10 +53,8 @@ public class RecordCloneTests
             },
         };
 
-        // Act
         var clone = original.DeepClone();
 
-        // Assert
         clone.ShouldNotBeNull();
         clone.ShouldNotBeSameAs(original);
         clone.Address.ShouldNotBeNull();
@@ -73,13 +66,10 @@ public class RecordCloneTests
     [Fact]
     public void DeepClone_RecordWithInitOnlyProperties_ClonesCorrectly()
     {
-        // Arrange
         var original = new RecordWithInitProps { Name = "Test", Value = 42 };
 
-        // Act
         var clone = original.DeepClone();
 
-        // Assert
         clone.ShouldNotBeNull();
         clone.ShouldNotBeSameAs(original);
         clone.Name.ShouldBe("Test");
@@ -89,13 +79,10 @@ public class RecordCloneTests
     [Fact]
     public void DeepClone_RecordStruct_ClonesCorrectly()
     {
-        // Arrange
         var original = new PointRecordStruct(10.5, 20.5);
 
-        // Act
         var clone = original.DeepClone();
 
-        // Assert
         clone.X.ShouldBe(10.5);
         clone.Y.ShouldBe(20.5);
     }
@@ -103,17 +90,14 @@ public class RecordCloneTests
     [Fact]
     public void DeepClone_RecordWithCollection_ClonesCorrectly()
     {
-        // Arrange
         var original = new RecordWithCollection
         {
             Name = "Test",
             Tags = new System.Collections.Generic.List<string> { "tag1", "tag2", "tag3" },
         };
 
-        // Act
         var clone = original.DeepClone();
 
-        // Assert
         clone.ShouldNotBeNull();
         clone.ShouldNotBeSameAs(original);
         clone.Tags.ShouldNotBeNull();
@@ -122,32 +106,31 @@ public class RecordCloneTests
     }
 }
 
-// Test records
 public partial record SimpleRecord(string Name, int Age) : IDeepCloneable<SimpleRecord>;
 
 public partial record PersonRecord : IDeepCloneable<PersonRecord>
 {
-    public string FirstName { get; set; } = "";
-    public string LastName { get; set; } = "";
+    public string FirstName { get; set; } = string.Empty;
+    public string LastName { get; set; } = string.Empty;
     public int Age { get; set; }
 }
 
 public partial record AddressRecord : IDeepCloneable<AddressRecord>
 {
-    public string Street { get; set; } = "";
-    public string City { get; set; } = "";
-    public string ZipCode { get; set; } = "";
+    public string Street { get; set; } = string.Empty;
+    public string City { get; set; } = string.Empty;
+    public string ZipCode { get; set; } = string.Empty;
 }
 
 public partial record PersonWithAddressRecord : IDeepCloneable<PersonWithAddressRecord>
 {
-    public string Name { get; set; } = "";
+    public string Name { get; set; } = string.Empty;
     public AddressRecord? Address { get; set; }
 }
 
 public partial record RecordWithInitProps : IDeepCloneable<RecordWithInitProps>
 {
-    public string Name { get; init; } = "";
+    public string Name { get; init; } = string.Empty;
     public int Value { get; init; }
 }
 
@@ -156,6 +139,6 @@ public partial record struct PointRecordStruct(double X, double Y)
 
 public partial record RecordWithCollection : IDeepCloneable<RecordWithCollection>
 {
-    public string Name { get; init; } = "";
+    public string Name { get; init; } = string.Empty;
     public System.Collections.Generic.List<string>? Tags { get; init; }
 }
