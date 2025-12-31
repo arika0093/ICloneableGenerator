@@ -485,3 +485,6 @@ $RECYCLE.BIN/
 
 # Vim temporary swap files
 *.swp
+
+# MSBuild debug logs
+MSBuild_Logs/
