@@ -21,7 +21,7 @@ public partial class Person { /* ... */ }
 public partial class PersonCloneHelper;
 ```
 
-This approach is not bad, but the automatically generated code cannot be accessed **from the library side**.
+This approach is not bad, but the automatically generated code cannot be accessed from the **another library side**.  
 In other words, if the library wants to call the `Clone` method, it has to choose one of the following approaches:
 
 #### 1. Implement a generic `Clone` using reflection
