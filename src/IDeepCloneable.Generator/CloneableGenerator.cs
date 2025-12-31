@@ -94,7 +94,7 @@ public class CloneableGenerator : IIncrementalGenerator
     {
         // Check if any interface is IDeepCloneable.IDeepCloneable<T>
         return classSymbol.AllInterfaces.FirstOrDefault(i =>
-            i.OriginalDefinition.ToDisplayString().StartsWith("IDeepCloneable.IDeepCloneable<")
+            i.OriginalDefinition.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat).StartsWith("global::IDeepCloneable.IDeepCloneable<")
         );
     }
     
@@ -104,7 +104,7 @@ public class CloneableGenerator : IIncrementalGenerator
             return false;
             
         return namedType.AllInterfaces.Any(i =>
-            i.OriginalDefinition.ToDisplayString().StartsWith("IDeepCloneable.IDeepCloneable<")
+            i.OriginalDefinition.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat).StartsWith("global::IDeepCloneable.IDeepCloneable<")
         );
     }
 
@@ -122,7 +122,7 @@ public class CloneableGenerator : IIncrementalGenerator
         if (namespaceSymbol is null || namespaceSymbol.IsGlobalNamespace)
             return null;
 
-        return namespaceSymbol.ToDisplayString();
+        return namespaceSymbol.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat).Replace("global::", "");
     }
 
     private static void Execute(ClassInfo classInfo, SourceProductionContext context)
@@ -151,7 +151,7 @@ public class CloneableGenerator : IIncrementalGenerator
                 {
                     partial {{classInfo.TypeKeyword}} {{classInfo.ClassName}}
                     {
-                    {{deepCloneMethod}}
+                {{deepCloneMethod}}
                     }
                 }
                 """;
@@ -191,41 +191,41 @@ public class CloneableGenerator : IIncrementalGenerator
                 foreach (var property in properties)
                 {
                     var expression = GenerateDeepCloneExpression(property);
-                    assignments.Add($"            {property.Name} = {expression}");
+                    assignments.Add($"                {property.Name} = {expression}");
                 }
 
                 var withAssignments = string.Join(",\n", assignments);
 
                 return $$"""
-                    public {{classInfo.ClassName}} {{DeepCloneMethodName}}()
-                    {
-                        return this with
+                        public {{classInfo.ClassName}} {{DeepCloneMethodName}}()
                         {
+                            return this with
+                            {
                     {{withAssignments}}
-                        };
-                    }
+                            };
+                        }
                     """;
             }
             else
             {
                 var statements = new List<string>();
-                statements.Add($"        var clone = new {classInfo.ClassName}();");
+                statements.Add($"            var clone = new {classInfo.ClassName}();");
 
                 foreach (var property in properties)
                 {
                     var expression = GenerateDeepCloneExpression(property);
-                    statements.Add($"        clone.{property.Name} = {expression};");
+                    statements.Add($"            clone.{property.Name} = {expression};");
                 }
 
-                statements.Add("        return clone;");
+                statements.Add("            return clone;");
 
                 var methodBody = string.Join("\n", statements);
 
                 return $$"""
-                    public {{classInfo.ClassName}} {{DeepCloneMethodName}}()
-                    {
+                        public {{classInfo.ClassName}} {{DeepCloneMethodName}}()
+                        {
                     {{methodBody}}
-                    }
+                        }
                     """;
             }
         }
@@ -233,19 +233,18 @@ public class CloneableGenerator : IIncrementalGenerator
         {
             var propertyAssignments = string.Join(
                 ",\n",
-                properties.Select(p => $"            {p.Name} = {GenerateDeepCloneExpression(p)}")
+                properties.Select(p => $"                {p.Name} = {GenerateDeepCloneExpression(p)}")
             );
 
             return $$"""
-                    public {{classInfo.ClassName}} {{DeepCloneMethodName}}()
-                    {
-                        return new {{classInfo.ClassName}}
+                        public {{classInfo.ClassName}} {{DeepCloneMethodName}}()
                         {
-                {{propertyAssignments}}
-                        };
-                    }
-
-                """;
+                            return new {{classInfo.ClassName}}
+                            {
+                    {{propertyAssignments}}
+                            };
+                        }
+                    """;
         }
     }
 
@@ -261,7 +260,7 @@ public class CloneableGenerator : IIncrementalGenerator
         if (typeSymbol is INamedTypeSymbol namedType)
         {
             var deepCloneableInterface = namedType.AllInterfaces.FirstOrDefault(i =>
-                i.OriginalDefinition.ToDisplayString().StartsWith("IDeepCloneable.IDeepCloneable")
+                i.OriginalDefinition.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat).StartsWith("global::IDeepCloneable.IDeepCloneable")
             );
 
             if (deepCloneableInterface is not null)
@@ -305,7 +304,7 @@ public class CloneableGenerator : IIncrementalGenerator
         }
         
         var propertyName = property.Name;
-        var typeName = namedType.ToDisplayString();
+        var typeName = namedType.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat);
         
         // Generate object initializer with deep cloned properties
         var propertyAssignments = new List<string>();
@@ -338,7 +337,7 @@ public class CloneableGenerator : IIncrementalGenerator
             
             if (arrayType.Rank > 1)
             {
-                var refArrayTypeName = $"{elementType.ToDisplayString()}[{new string(',', arrayType.Rank - 1)}]";
+                var refArrayTypeName = $"{elementType.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat)}[{new string(',', arrayType.Rank - 1)}]";
                 return $"{sourceObjectName}.{propertyName} != null ? ({refArrayTypeName}){sourceObjectName}.{propertyName}.Clone() : null";
             }
             
@@ -350,10 +349,10 @@ public class CloneableGenerator : IIncrementalGenerator
             
             if (elementType.IsValueType || elementType.SpecialType == SpecialType.System_String)
             {
-                return $"{sourceObjectName}.{propertyName} != null ? ({elementType.ToDisplayString()}[]){sourceObjectName}.{propertyName}.Clone() : null";
+                return $"{sourceObjectName}.{propertyName} != null ? ({elementType.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat)}[]){sourceObjectName}.{propertyName}.Clone() : null";
             }
             
-            var refArrayTypeName2 = $"{elementType.ToDisplayString()}[]";
+            var refArrayTypeName2 = $"{elementType.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat)}[]";
             return $"{sourceObjectName}.{propertyName} != null ? ({refArrayTypeName2}){sourceObjectName}.{propertyName}.Clone() : null";
         }
 
@@ -390,7 +389,7 @@ public class CloneableGenerator : IIncrementalGenerator
                         nestedAssignments.Add($"{nestedProp.Name} = {nestedCloneExpr}!");
                     }
                     var nestedAssignmentsStr = string.Join(", ", nestedAssignments);
-                    return $"{sourceObjectName}.{property.Name} != null ? new {namedType.ToDisplayString()} {{ {nestedAssignmentsStr} }} : null";
+                    return $"{sourceObjectName}.{property.Name} != null ? new {namedType.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat)} {{ {nestedAssignmentsStr} }} : null";
                 }
             }
         }
@@ -410,7 +409,6 @@ public class CloneableGenerator : IIncrementalGenerator
 
         var elementType = collectionType.TypeArguments[0];
         var propertyName = property.Name;
-        var typeName = collectionType.OriginalDefinition.ToDisplayString();
 
         bool isCloneable = IsCloneableType(elementType);
 
@@ -426,7 +424,7 @@ public class CloneableGenerator : IIncrementalGenerator
             return $"{sourceObjectName}.{propertyName}?.Select(x => x?.{DeepCloneMethodName}()).ToList()";
         }
         
-        return $"{sourceObjectName}.{propertyName} != null ? new System.Collections.Generic.List<{elementType.ToDisplayString()}>({sourceObjectName}.{propertyName}) : null";
+        return $"{sourceObjectName}.{propertyName} != null ? new System.Collections.Generic.List<{elementType.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat)}>({sourceObjectName}.{propertyName}) : null";
     }
     
     private static string GenerateDictionaryCloneForObject(IPropertySymbol property, INamedTypeSymbol dictionaryType, string sourceObjectName)
@@ -445,21 +443,21 @@ public class CloneableGenerator : IIncrementalGenerator
             return $"{sourceObjectName}.{propertyName}?.ToDictionary(kvp => kvp.Key, kvp => kvp.Value?.{DeepCloneMethodName}())";
         }
 
-        return $"{sourceObjectName}.{propertyName} != null ? new System.Collections.Generic.Dictionary<{keyType.ToDisplayString()}, {valueType.ToDisplayString()}>({sourceObjectName}.{propertyName}) : null";
+        return $"{sourceObjectName}.{propertyName} != null ? new System.Collections.Generic.Dictionary<{keyType.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat)}, {valueType.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat)}>({sourceObjectName}.{propertyName}) : null";
     }
 
     private static bool IsDictionaryType(INamedTypeSymbol type)
     {
         return type.AllInterfaces.Any(i =>
-            i.OriginalDefinition.ToDisplayString()
-            == "System.Collections.Generic.IDictionary<TKey, TValue>"
+            i.OriginalDefinition.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat)
+            == "global::System.Collections.Generic.IDictionary<TKey, TValue>"
         );
     }
 
     private static bool IsCollectionType(INamedTypeSymbol type)
     {
         return type.AllInterfaces.Any(i =>
-            i.OriginalDefinition.ToDisplayString() == "System.Collections.Generic.IEnumerable<T>"
+            i.OriginalDefinition.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat) == "global::System.Collections.Generic.IEnumerable<T>"
         );
     }
 
@@ -473,7 +471,7 @@ public class CloneableGenerator : IIncrementalGenerator
 
         if (arrayType.Rank > 1)
         {
-            var elementTypeName = elementType.ToDisplayString();
+            var elementTypeName = elementType.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat);
             var rankCommas = new string(',', arrayType.Rank - 1);
             var arrayTypeName = $"{elementTypeName}[{rankCommas}]";
             return $"this.{propertyName} != null ? ({arrayTypeName})this.{propertyName}.Clone() : null";
@@ -482,7 +480,7 @@ public class CloneableGenerator : IIncrementalGenerator
         if (elementType is INamedTypeSymbol elementNamedType)
         {
             var deepCloneableInterface = elementNamedType.AllInterfaces.FirstOrDefault(i =>
-                i.OriginalDefinition.ToDisplayString().StartsWith("IDeepCloneable.IDeepCloneable")
+                i.OriginalDefinition.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat).StartsWith("global::IDeepCloneable.IDeepCloneable")
             );
 
             if (deepCloneableInterface is not null)
@@ -493,11 +491,11 @@ public class CloneableGenerator : IIncrementalGenerator
 
         if (elementType.IsValueType || elementType.SpecialType == SpecialType.System_String)
         {
-            var arrayTypeName = $"{elementType.ToDisplayString()}[]";
+            var arrayTypeName = $"{elementType.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat)}[]";
             return $"this.{propertyName} != null ? ({arrayTypeName})this.{propertyName}.Clone() : null";
         }
 
-        var refArrayTypeName = $"{elementType.ToDisplayString()}[]";
+        var refArrayTypeName = $"{elementType.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat)}[]";
         return $"this.{propertyName} != null ? ({refArrayTypeName})this.{propertyName}.Clone() : null";
     }
 
@@ -512,18 +510,19 @@ public class CloneableGenerator : IIncrementalGenerator
         var keyType = dictionaryType.TypeArguments[0];
         var valueType = dictionaryType.TypeArguments[1];
         var propertyName = property.Name;
-        var typeName = dictionaryType.OriginalDefinition.ToDisplayString();
 
         bool valueIsCloneable = false;
         if (valueType is INamedTypeSymbol valueNamedType)
         {
             var deepCloneableInterface = valueNamedType.AllInterfaces.FirstOrDefault(i =>
-                i.OriginalDefinition.ToDisplayString().StartsWith("IDeepCloneable.IDeepCloneable")
+                i.OriginalDefinition.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat).StartsWith("global::IDeepCloneable.IDeepCloneable")
             );
             valueIsCloneable = deepCloneableInterface is not null;
         }
 
-        if (typeName.StartsWith("System.Collections.Immutable.ImmutableDictionary<"))
+        var typeName = dictionaryType.OriginalDefinition.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat);
+
+        if (typeName.StartsWith("global::System.Collections.Immutable.ImmutableDictionary<"))
         {
             if (valueIsCloneable)
             {
@@ -532,13 +531,13 @@ public class CloneableGenerator : IIncrementalGenerator
             return $"this.{propertyName}";
         }
 
-        if (typeName.StartsWith("System.Collections.ObjectModel.ReadOnlyDictionary<"))
+        if (typeName.StartsWith("global::System.Collections.ObjectModel.ReadOnlyDictionary<"))
         {
             if (valueIsCloneable)
             {
-                return $"this.{propertyName} != null ? new System.Collections.ObjectModel.ReadOnlyDictionary<{keyType.ToDisplayString()}, {valueType.ToDisplayString()}>(this.{propertyName}.ToDictionary(kvp => kvp.Key, kvp => kvp.Value?.{DeepCloneMethodName}())) : null";
+                return $"this.{propertyName} != null ? new System.Collections.ObjectModel.ReadOnlyDictionary<{keyType.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat)}, {valueType.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat)}>(this.{propertyName}.ToDictionary(kvp => kvp.Key, kvp => kvp.Value?.{DeepCloneMethodName}())) : null";
             }
-            return $"this.{propertyName} != null ? new System.Collections.ObjectModel.ReadOnlyDictionary<{keyType.ToDisplayString()}, {valueType.ToDisplayString()}>(new System.Collections.Generic.Dictionary<{keyType.ToDisplayString()}, {valueType.ToDisplayString()}>(this.{propertyName})) : null";
+            return $"this.{propertyName} != null ? new System.Collections.ObjectModel.ReadOnlyDictionary<{keyType.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat)}, {valueType.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat)}>(new System.Collections.Generic.Dictionary<{keyType.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat)}, {valueType.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat)}>(this.{propertyName})) : null";
         }
 
         if (valueIsCloneable)
@@ -546,7 +545,7 @@ public class CloneableGenerator : IIncrementalGenerator
             return $"this.{propertyName}?.ToDictionary(kvp => kvp.Key, kvp => kvp.Value?.{DeepCloneMethodName}())";
         }
 
-        return $"this.{propertyName} != null ? new System.Collections.Generic.Dictionary<{keyType.ToDisplayString()}, {valueType.ToDisplayString()}>(this.{propertyName}) : null";
+        return $"this.{propertyName} != null ? new System.Collections.Generic.Dictionary<{keyType.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat)}, {valueType.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat)}>(this.{propertyName}) : null";
     }
 
     private static string GenerateCollectionDeepClone(
@@ -559,48 +558,48 @@ public class CloneableGenerator : IIncrementalGenerator
 
         var elementType = collectionType.TypeArguments[0];
         var propertyName = property.Name;
-        var typeName = collectionType.OriginalDefinition.ToDisplayString();
+        var typeName = collectionType.OriginalDefinition.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat);
 
         bool isCloneable = false;
         if (elementType is INamedTypeSymbol elementNamedType)
         {
             var deepCloneableInterface = elementNamedType.AllInterfaces.FirstOrDefault(i =>
-                i.OriginalDefinition.ToDisplayString().StartsWith("IDeepCloneable.IDeepCloneable")
+                i.OriginalDefinition.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat).StartsWith("global::IDeepCloneable.IDeepCloneable")
             );
             isCloneable = deepCloneableInterface is not null;
         }
 
-        if (typeName == "System.Collections.Generic.Stack<T>")
+        if (typeName == "global::System.Collections.Generic.Stack<T>")
             return GenerateStackClone(propertyName, elementType, isCloneable);
 
-        if (typeName == "System.Collections.Generic.Queue<T>")
+        if (typeName == "global::System.Collections.Generic.Queue<T>")
             return GenerateQueueClone(propertyName, elementType, isCloneable);
 
-        if (typeName == "System.Collections.Generic.HashSet<T>")
+        if (typeName == "global::System.Collections.Generic.HashSet<T>")
             return GenerateHashSetClone(propertyName, elementType, isCloneable);
 
-        if (typeName == "System.Collections.Generic.SortedSet<T>")
+        if (typeName == "global::System.Collections.Generic.SortedSet<T>")
             return GenerateSortedSetClone(propertyName, elementType, isCloneable);
 
-        if (typeName == "System.Collections.ObjectModel.ObservableCollection<T>")
+        if (typeName == "global::System.Collections.ObjectModel.ObservableCollection<T>")
             return GenerateObservableCollectionClone(propertyName, elementType, isCloneable);
 
-        if (typeName == "System.Collections.ObjectModel.ReadOnlyCollection<T>")
+        if (typeName == "global::System.Collections.ObjectModel.ReadOnlyCollection<T>")
             return GenerateReadOnlyCollectionClone(propertyName, elementType, isCloneable);
 
-        if (typeName.StartsWith("System.Collections.Immutable.ImmutableList<"))
+        if (typeName.StartsWith("global::System.Collections.Immutable.ImmutableList<"))
             return GenerateImmutableListClone(propertyName, elementType, isCloneable);
 
-        if (typeName.StartsWith("System.Collections.Immutable.ImmutableArray<"))
+        if (typeName.StartsWith("global::System.Collections.Immutable.ImmutableArray<"))
             return GenerateImmutableArrayClone(propertyName, elementType, isCloneable);
 
-        if (typeName.StartsWith("System.Collections.Immutable.ImmutableHashSet<"))
+        if (typeName.StartsWith("global::System.Collections.Immutable.ImmutableHashSet<"))
             return GenerateImmutableHashSetClone(propertyName, elementType, isCloneable);
 
-        if (typeName.StartsWith("System.Collections.Immutable.ImmutableQueue<"))
+        if (typeName.StartsWith("global::System.Collections.Immutable.ImmutableQueue<"))
             return GenerateImmutableQueueClone(propertyName, elementType, isCloneable);
 
-        if (typeName.StartsWith("System.Collections.Immutable.ImmutableStack<"))
+        if (typeName.StartsWith("global::System.Collections.Immutable.ImmutableStack<"))
             return GenerateImmutableStackClone(propertyName, elementType, isCloneable);
 
         return GenerateDefaultListClone(propertyName, elementType, isCloneable);
@@ -614,9 +613,9 @@ public class CloneableGenerator : IIncrementalGenerator
     {
         if (isCloneable)
         {
-            return $"this.{propertyName} != null ? new System.Collections.Generic.Stack<{elementType.ToDisplayString()}>(this.{propertyName}.Reverse().Select(x => x?.{DeepCloneMethodName}())) : null";
+            return $"this.{propertyName} != null ? new System.Collections.Generic.Stack<{elementType.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat)}>(this.{propertyName}.Reverse().Select(x => x?.{DeepCloneMethodName}())) : null";
         }
-        return $"this.{propertyName} != null ? new System.Collections.Generic.Stack<{elementType.ToDisplayString()}>(this.{propertyName}.Reverse()) : null";
+        return $"this.{propertyName} != null ? new System.Collections.Generic.Stack<{elementType.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat)}>(this.{propertyName}.Reverse()) : null";
     }
 
     private static string GenerateQueueClone(
@@ -627,9 +626,9 @@ public class CloneableGenerator : IIncrementalGenerator
     {
         if (isCloneable)
         {
-            return $"this.{propertyName} != null ? new System.Collections.Generic.Queue<{elementType.ToDisplayString()}>(this.{propertyName}.Select(x => x?.{DeepCloneMethodName}())) : null";
+            return $"this.{propertyName} != null ? new System.Collections.Generic.Queue<{elementType.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat)}>(this.{propertyName}.Select(x => x?.{DeepCloneMethodName}())) : null";
         }
-        return $"this.{propertyName} != null ? new System.Collections.Generic.Queue<{elementType.ToDisplayString()}>(this.{propertyName}) : null";
+        return $"this.{propertyName} != null ? new System.Collections.Generic.Queue<{elementType.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat)}>(this.{propertyName}) : null";
     }
 
     private static string GenerateHashSetClone(
@@ -640,9 +639,9 @@ public class CloneableGenerator : IIncrementalGenerator
     {
         if (isCloneable)
         {
-            return $"this.{propertyName} != null ? new System.Collections.Generic.HashSet<{elementType.ToDisplayString()}>(this.{propertyName}.Select(x => x?.{DeepCloneMethodName}())) : null";
+            return $"this.{propertyName} != null ? new System.Collections.Generic.HashSet<{elementType.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat)}>(this.{propertyName}.Select(x => x?.{DeepCloneMethodName}())) : null";
         }
-        return $"this.{propertyName} != null ? new System.Collections.Generic.HashSet<{elementType.ToDisplayString()}>(this.{propertyName}) : null";
+        return $"this.{propertyName} != null ? new System.Collections.Generic.HashSet<{elementType.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat)}>(this.{propertyName}) : null";
     }
 
     private static string GenerateSortedSetClone(
@@ -653,9 +652,9 @@ public class CloneableGenerator : IIncrementalGenerator
     {
         if (isCloneable)
         {
-            return $"this.{propertyName} != null ? new System.Collections.Generic.SortedSet<{elementType.ToDisplayString()}>(this.{propertyName}.Select(x => x?.{DeepCloneMethodName}())) : null";
+            return $"this.{propertyName} != null ? new System.Collections.Generic.SortedSet<{elementType.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat)}>(this.{propertyName}.Select(x => x?.{DeepCloneMethodName}())) : null";
         }
-        return $"this.{propertyName} != null ? new System.Collections.Generic.SortedSet<{elementType.ToDisplayString()}>(this.{propertyName}) : null";
+        return $"this.{propertyName} != null ? new System.Collections.Generic.SortedSet<{elementType.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat)}>(this.{propertyName}) : null";
     }
 
     private static string GenerateObservableCollectionClone(
@@ -666,9 +665,9 @@ public class CloneableGenerator : IIncrementalGenerator
     {
         if (isCloneable)
         {
-            return $"this.{propertyName} != null ? new System.Collections.ObjectModel.ObservableCollection<{elementType.ToDisplayString()}>(this.{propertyName}.Select(x => x?.{DeepCloneMethodName}())) : null";
+            return $"this.{propertyName} != null ? new System.Collections.ObjectModel.ObservableCollection<{elementType.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat)}>(this.{propertyName}.Select(x => x?.{DeepCloneMethodName}())) : null";
         }
-        return $"this.{propertyName} != null ? new System.Collections.ObjectModel.ObservableCollection<{elementType.ToDisplayString()}>(this.{propertyName}) : null";
+        return $"this.{propertyName} != null ? new System.Collections.ObjectModel.ObservableCollection<{elementType.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat)}>(this.{propertyName}) : null";
     }
 
     private static string GenerateReadOnlyCollectionClone(
@@ -679,9 +678,9 @@ public class CloneableGenerator : IIncrementalGenerator
     {
         if (isCloneable)
         {
-            return $"this.{propertyName} != null ? new System.Collections.ObjectModel.ReadOnlyCollection<{elementType.ToDisplayString()}>(this.{propertyName}.Select(x => x?.{DeepCloneMethodName}()).ToList()) : null";
+            return $"this.{propertyName} != null ? new System.Collections.ObjectModel.ReadOnlyCollection<{elementType.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat)}>(this.{propertyName}.Select(x => x?.{DeepCloneMethodName}()).ToList()) : null";
         }
-        return $"this.{propertyName} != null ? new System.Collections.ObjectModel.ReadOnlyCollection<{elementType.ToDisplayString()}>(this.{propertyName}.ToList()) : null";
+        return $"this.{propertyName} != null ? new System.Collections.ObjectModel.ReadOnlyCollection<{elementType.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat)}>(this.{propertyName}.ToList()) : null";
     }
 
     private static string GenerateImmutableListClone(
@@ -731,9 +730,9 @@ public class CloneableGenerator : IIncrementalGenerator
     {
         if (isCloneable)
         {
-            return $"this.{propertyName} == null ? System.Collections.Immutable.ImmutableQueue<{elementType.ToDisplayString()}>.Empty : System.Collections.Immutable.ImmutableQueue.CreateRange(this.{propertyName}.Select(x => x?.{DeepCloneMethodName}()))";
+            return $"this.{propertyName} == null ? System.Collections.Immutable.ImmutableQueue<{elementType.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat)}>.Empty : System.Collections.Immutable.ImmutableQueue.CreateRange(this.{propertyName}.Select(x => x?.{DeepCloneMethodName}()))";
         }
-        return $"this.{propertyName} == null ? System.Collections.Immutable.ImmutableQueue<{elementType.ToDisplayString()}>.Empty : System.Collections.Immutable.ImmutableQueue.CreateRange(this.{propertyName})";
+        return $"this.{propertyName} == null ? System.Collections.Immutable.ImmutableQueue<{elementType.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat)}>.Empty : System.Collections.Immutable.ImmutableQueue.CreateRange(this.{propertyName})";
     }
 
     private static string GenerateImmutableStackClone(
@@ -744,9 +743,9 @@ public class CloneableGenerator : IIncrementalGenerator
     {
         if (isCloneable)
         {
-            return $"this.{propertyName} == null ? System.Collections.Immutable.ImmutableStack<{elementType.ToDisplayString()}>.Empty : System.Collections.Immutable.ImmutableStack.CreateRange(this.{propertyName}.Select(x => x?.{DeepCloneMethodName}()))";
+            return $"this.{propertyName} == null ? System.Collections.Immutable.ImmutableStack<{elementType.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat)}>.Empty : System.Collections.Immutable.ImmutableStack.CreateRange(this.{propertyName}.Select(x => x?.{DeepCloneMethodName}()))";
         }
-        return $"this.{propertyName} == null ? System.Collections.Immutable.ImmutableStack<{elementType.ToDisplayString()}>.Empty : System.Collections.Immutable.ImmutableStack.CreateRange(this.{propertyName})";
+        return $"this.{propertyName} == null ? System.Collections.Immutable.ImmutableStack<{elementType.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat)}>.Empty : System.Collections.Immutable.ImmutableStack.CreateRange(this.{propertyName})";
     }
 
     private static string GenerateDefaultListClone(
@@ -768,7 +767,7 @@ public class CloneableGenerator : IIncrementalGenerator
             return $"this.{propertyName}?.Select(x => {elementCloneExpr}).ToList()";
         }
         
-        return $"this.{propertyName} != null ? new System.Collections.Generic.List<{elementType.ToDisplayString()}>(this.{propertyName}) : null";
+        return $"this.{propertyName} != null ? new System.Collections.Generic.List<{elementType.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat)}>(this.{propertyName}) : null";
     }
     
     private static string GenerateNestedCollectionCloneExpression(INamedTypeSymbol collectionType, string varName)
@@ -796,7 +795,7 @@ public class CloneableGenerator : IIncrementalGenerator
         }
         
         // For value types, strings, and reference types, create a new list with copied elements
-        return $"{varName} != null ? new System.Collections.Generic.List<{elementType.ToDisplayString()}>({varName}) : null";
+        return $"{varName} != null ? new System.Collections.Generic.List<{elementType.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat)}>({varName}) : null";
     }
 
     private static List<IPropertySymbol> GetCloneableProperties(INamedTypeSymbol classSymbol)
