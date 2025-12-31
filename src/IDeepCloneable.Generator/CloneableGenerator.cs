@@ -133,12 +133,12 @@ public class CloneableGenerator : IIncrementalGenerator
             using System.Linq;
             using System.Collections.Immutable;
 
-            {namespaceDecl}
+            {{namespaceDecl}}
 
             partial {classInfo.TypeKeyword} {classInfo.ClassName}
-            {{
-            {deepCloneMethod}
-            }}
+            {
+            {{deepCloneMethod}}
+            }
             """;
     }
 
@@ -206,12 +206,12 @@ public class CloneableGenerator : IIncrementalGenerator
 
             return $$"""
                     public {classInfo.ClassName} {DeepCloneMethodName}()
-                    {{
+                    {
                         return new {classInfo.ClassName}
-                        {{
-            {propertyAssignments}
-                        }};
-                    }}
+                        {
+                {{propertyAssignments}}
+                        };
+                    }
 
                 """;
         }
@@ -229,8 +229,7 @@ public class CloneableGenerator : IIncrementalGenerator
         if (typeSymbol is INamedTypeSymbol namedType)
         {
             var deepCloneableInterface = namedType.AllInterfaces.FirstOrDefault(i =>
-                i.OriginalDefinition.ToDisplayString()
-                    .StartsWith("IDeepCloneable.IDeepCloneable")
+                i.OriginalDefinition.ToDisplayString().StartsWith("IDeepCloneable.IDeepCloneable")
             );
 
             if (deepCloneableInterface is not null)
@@ -291,8 +290,7 @@ public class CloneableGenerator : IIncrementalGenerator
         if (elementType is INamedTypeSymbol elementNamedType)
         {
             var deepCloneableInterface = elementNamedType.AllInterfaces.FirstOrDefault(i =>
-                i.OriginalDefinition.ToDisplayString()
-                    .StartsWith("IDeepCloneable.IDeepCloneable")
+                i.OriginalDefinition.ToDisplayString().StartsWith("IDeepCloneable.IDeepCloneable")
             );
 
             if (deepCloneableInterface is not null)
@@ -328,8 +326,7 @@ public class CloneableGenerator : IIncrementalGenerator
         if (valueType is INamedTypeSymbol valueNamedType)
         {
             var deepCloneableInterface = valueNamedType.AllInterfaces.FirstOrDefault(i =>
-                i.OriginalDefinition.ToDisplayString()
-                    .StartsWith("IDeepCloneable.IDeepCloneable")
+                i.OriginalDefinition.ToDisplayString().StartsWith("IDeepCloneable.IDeepCloneable")
             );
             valueIsCloneable = deepCloneableInterface is not null;
         }
@@ -376,8 +373,7 @@ public class CloneableGenerator : IIncrementalGenerator
         if (elementType is INamedTypeSymbol elementNamedType)
         {
             var deepCloneableInterface = elementNamedType.AllInterfaces.FirstOrDefault(i =>
-                i.OriginalDefinition.ToDisplayString()
-                    .StartsWith("IDeepCloneable.IDeepCloneable")
+                i.OriginalDefinition.ToDisplayString().StartsWith("IDeepCloneable.IDeepCloneable")
             );
             isCloneable = deepCloneableInterface is not null;
         }
