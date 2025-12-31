@@ -97,6 +97,16 @@ public class CloneableGenerator : IIncrementalGenerator
             i.OriginalDefinition.ToDisplayString().StartsWith("IDeepCloneable.IDeepCloneable<")
         );
     }
+    
+    private static bool IsCloneableType(ITypeSymbol typeSymbol)
+    {
+        if (typeSymbol is not INamedTypeSymbol namedType)
+            return false;
+            
+        return namedType.AllInterfaces.Any(i =>
+            i.OriginalDefinition.ToDisplayString().StartsWith("IDeepCloneable.IDeepCloneable<")
+        );
+    }
 
     private static bool HasMethodImplementation(INamedTypeSymbol classSymbol, string methodName)
     {
@@ -595,20 +605,15 @@ public class CloneableGenerator : IIncrementalGenerator
     
     private static string GenerateNestedCollectionCloneExpression(INamedTypeSymbol collectionType, string varName)
     {
+        // If collection has no type arguments, return the variable as-is
+        // This shouldn't normally happen for generic collections but handles edge cases
         if (collectionType.TypeArguments.Length == 0)
             return varName;
         
         var elementType = collectionType.TypeArguments[0];
         
         // Check if element is cloneable
-        bool isCloneable = false;
-        if (elementType is INamedTypeSymbol elementNamedType)
-        {
-            var deepCloneableInterface = elementNamedType.AllInterfaces.FirstOrDefault(i =>
-                i.OriginalDefinition.ToDisplayString().StartsWith("IDeepCloneable.IDeepCloneable<")
-            );
-            isCloneable = deepCloneableInterface is not null;
-        }
+        bool isCloneable = IsCloneableType(elementType);
         
         if (isCloneable)
         {
@@ -622,13 +627,7 @@ public class CloneableGenerator : IIncrementalGenerator
             return $"{varName}?.Select(item => {nestedCloneExpr}).ToList()";
         }
         
-        // For value types and strings, just copy
-        if (elementType.IsValueType || elementType.SpecialType == SpecialType.System_String)
-        {
-            return $"{varName} != null ? new System.Collections.Generic.List<{elementType.ToDisplayString()}>({varName}) : null";
-        }
-        
-        // Default: create new list
+        // For value types, strings, and reference types, create a new list with copied elements
         return $"{varName} != null ? new System.Collections.Generic.List<{elementType.ToDisplayString()}>({varName}) : null";
     }
 
