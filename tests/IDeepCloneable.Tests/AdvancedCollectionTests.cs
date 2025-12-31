@@ -137,6 +137,7 @@ public class AdvancedCollectionTests
         var clone = original.DeepClone();
 
         clone.ShouldNotBeSameAs(original);
+        clone.Items.ShouldBeSameAs(original.Items);
         clone.Items.ShouldNotBeNull();
         clone.Items.Count.ShouldBe(3);
         clone.Items.ShouldBe(new[] { 1, 2, 3 });
@@ -154,6 +155,7 @@ public class AdvancedCollectionTests
         var clone = original.DeepClone();
 
         clone.ShouldNotBeSameAs(original);
+        clone.Items.ShouldNotBeSameAs(original.Items);
         clone.Items.IsDefault.ShouldBeFalse();
         clone.Items.Length.ShouldBe(3);
         clone.Items.ShouldBe(new[] { 1, 2, 3 });
@@ -171,6 +173,7 @@ public class AdvancedCollectionTests
         var clone = original.DeepClone();
 
         clone.ShouldNotBeSameAs(original);
+        clone.Items.ShouldBeSameAs(original.Items);
         clone.Items.ShouldNotBeNull();
         clone.Items.Count.ShouldBe(3);
         clone.Items.OrderBy(x => x).ShouldBe(new[] { 1, 2, 3 });
@@ -192,6 +195,7 @@ public class AdvancedCollectionTests
         var clone = original.DeepClone();
 
         clone.ShouldNotBeSameAs(original);
+        clone.Items.ShouldBeSameAs(original.Items);
         clone.Items.ShouldNotBeNull();
         clone.Items.Count.ShouldBe(3);
         clone.Items["one"].ShouldBe(1);
