@@ -201,14 +201,14 @@ public class CloneableGenerator : IIncrementalGenerator
                 var withAssignments = string.Join(",\n", assignments);
 
                 return $$"""
-                        public {{classInfo.ClassName}} {{DeepCloneMethodName}}()
+                    public {{classInfo.ClassName}} {{DeepCloneMethodName}}()
+                    {
+                        return this with
                         {
-                            return this with
-                            {
-                    {{withAssignments}}
-                            };
-                        }
-                    """;
+            {{withAssignments}}
+                        };
+                    }
+            """;
             }
             else
             {
@@ -226,11 +226,11 @@ public class CloneableGenerator : IIncrementalGenerator
                 var methodBody = string.Join("\n", statements);
 
                 return $$"""
-                        public {{classInfo.ClassName}} {{DeepCloneMethodName}}()
-                        {
-                    {{methodBody}}
-                        }
-                    """;
+                    public {{classInfo.ClassName}} {{DeepCloneMethodName}}()
+                    {
+            {{methodBody}}
+                    }
+            """;
             }
         }
         else
@@ -247,10 +247,10 @@ public class CloneableGenerator : IIncrementalGenerator
                     {
                         return new {{classInfo.ClassName}}
                         {
-                {{propertyAssignments}}
+            {{propertyAssignments}}
                         };
                     }
-                """;
+            """;
         }
     }
 
