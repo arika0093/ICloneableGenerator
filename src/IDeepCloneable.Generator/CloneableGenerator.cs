@@ -12,6 +12,11 @@ namespace IDeepCloneable.Generator;
 public class CloneableGenerator : IIncrementalGenerator
 {
     private const string DeepCloneMethodName = "DeepClone";
+    
+    // Indentation constants for generated code
+    // These represent the final indentation after raw string literal baseline removal (12 spaces)
+    private const string PropertyIndent = "                "; // 16 spaces (4 levels: namespace/class/method/initializer)
+    private const string StatementIndent = "            "; // 12 spaces (3 levels: namespace/class/method)
 
     public void Initialize(IncrementalGeneratorInitializationContext context)
     {
@@ -195,7 +200,7 @@ public class CloneableGenerator : IIncrementalGenerator
                 foreach (var property in properties)
                 {
                     var expression = GenerateDeepCloneExpression(property);
-                    assignments.Add($"                {property.Name} = {expression}");
+                    assignments.Add($"{PropertyIndent}{property.Name} = {expression}");
                 }
 
                 var withAssignments = string.Join(",\n", assignments);
@@ -213,15 +218,15 @@ public class CloneableGenerator : IIncrementalGenerator
             else
             {
                 var statements = new List<string>();
-                statements.Add($"            var clone = new {classInfo.ClassName}();");
+                statements.Add($"{StatementIndent}var clone = new {classInfo.ClassName}();");
 
                 foreach (var property in properties)
                 {
                     var expression = GenerateDeepCloneExpression(property);
-                    statements.Add($"            clone.{property.Name} = {expression};");
+                    statements.Add($"{StatementIndent}clone.{property.Name} = {expression};");
                 }
 
-                statements.Add("            return clone;");
+                statements.Add($"{StatementIndent}return clone;");
 
                 var methodBody = string.Join("\n", statements);
 
@@ -238,7 +243,7 @@ public class CloneableGenerator : IIncrementalGenerator
             var propertyAssignments = string.Join(
                 ",\n",
                 properties.Select(p =>
-                    $"                {p.Name} = {GenerateDeepCloneExpression(p)}"
+                    $"{PropertyIndent}{p.Name} = {GenerateDeepCloneExpression(p)}"
                 )
             );
 
