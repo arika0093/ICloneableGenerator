@@ -12,7 +12,7 @@ namespace IDeepCloneable.Generator;
 public class CloneableGenerator : IIncrementalGenerator
 {
     private const string DeepCloneMethodName = "DeepClone";
-    
+
     // Indentation constants for generated code
     // These represent the final indentation after raw string literal baseline removal (12 spaces)
     private const string PropertyIndent = "                "; // 16 spaces (4 levels: namespace/class/method/initializer)
@@ -206,14 +206,14 @@ public class CloneableGenerator : IIncrementalGenerator
                 var withAssignments = string.Join(",\n", assignments);
 
                 return $$"""
-                    public {{classInfo.ClassName}} {{DeepCloneMethodName}}()
-                    {
-                        return this with
-                        {
-            {{withAssignments}}
-                        };
-                    }
-            """;
+                            public {{classInfo.ClassName}} {{DeepCloneMethodName}}()
+                            {
+                                return this with
+                                {
+                    {{withAssignments}}
+                                };
+                            }
+                    """;
             }
             else
             {
@@ -231,11 +231,11 @@ public class CloneableGenerator : IIncrementalGenerator
                 var methodBody = string.Join("\n", statements);
 
                 return $$"""
-                    public {{classInfo.ClassName}} {{DeepCloneMethodName}}()
-                    {
-            {{methodBody}}
-                    }
-            """;
+                            public {{classInfo.ClassName}} {{DeepCloneMethodName}}()
+                            {
+                    {{methodBody}}
+                            }
+                    """;
             }
         }
         else
@@ -248,14 +248,14 @@ public class CloneableGenerator : IIncrementalGenerator
             );
 
             return $$"""
-                    public {{classInfo.ClassName}} {{DeepCloneMethodName}}()
-                    {
-                        return new {{classInfo.ClassName}}
+                        public {{classInfo.ClassName}} {{DeepCloneMethodName}}()
                         {
-            {{propertyAssignments}}
-                        };
-                    }
-            """;
+                            return new {{classInfo.ClassName}}
+                            {
+                {{propertyAssignments}}
+                            };
+                        }
+                """;
         }
     }
 
