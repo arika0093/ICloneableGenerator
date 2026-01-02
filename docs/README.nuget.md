@@ -1,6 +1,6 @@
 # IDeepCloneable
 
-Automatic implementation of the `IDeepCloneable<T>` interface via source generators. For library authors.
+Automatic implementation of the `IDeepCloneable<T>` interface via source generators.
 
 ## Overview
 Provides automatic generation of the `DeepClone()` method for types implementing `IDeepCloneable<T>`.
