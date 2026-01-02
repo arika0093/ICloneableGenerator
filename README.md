@@ -7,6 +7,52 @@ Automatic implementation of the `IDeepCloneable<T>` interface via source generat
 Provides automatic generation of the `DeepClone()` method for types implementing `IDeepCloneable<T>`.
 This works not only for `IDeepCloneable<T>` itself, but also for interfaces and abstract classes that inherit from it.
 
+## How to use
+Install the NuGet package [IDeepCloneable](https://www.nuget.org/packages/IDeepCloneable/) to your project.
+
+```bash
+dotnet add package IDeepCloneable
+```
+
+Then create a partial class that implements `IDeepCloneable<T>`.
+
+```csharp
+using IDeepCloneable;
+
+public partial class Person : IDeepCloneable<Person>
+{
+    public string Name { get; set; }
+    public int Age { get; set; }
+}
+```
+
+That's it! The `DeepClone()` method will be automatically generated.
+
+```csharp
+var person1 = new Person { Name = "Alice", Age = 30 };
+var person2 = person1.DeepClone();
+person2.ShoultNotBeSameAs(person1);
+```
+
+You can also use interfaces or abstract classes.
+
+```csharp
+using IDeepCloneable;
+public interface IPerson : IDeepCloneable<IPerson>
+{
+    string Name { get; set; }
+    int Age { get; set; }
+}
+
+// and then
+public partial class Person : IPerson
+{
+    public string Name { get; set; }
+    public int Age { get; set; }
+    // -> DeepClone() will be generated!
+}
+```
+
 ## Why this library?
 ### Problem
 There are many libraries that implement DeepCopy. Why is this library necessary?
@@ -144,8 +190,3 @@ public partial class MyModel : ILibraryModel<MyModel>
   public int Age { get; set; }
 }
 ```
-
-## License
-
-Apache-2.0
-
