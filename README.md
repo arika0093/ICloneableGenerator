@@ -120,7 +120,7 @@ public class LibraryConfiguration<T>
   {
     // Check if T implements IDeepCloneable<T>
     // Or, you can add a type constraint: where T : IDeepCloneable<T>
-    if(typeof(T) is IDeepCloneable<T>)
+    if(typeof(IDeepCloneable<T>).IsAssignableFrom(typeof(T)))
     {
       _cloneFunc = obj => obj.DeepClone();
     }
